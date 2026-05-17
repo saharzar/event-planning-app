@@ -3,8 +3,8 @@ package com.eventplanning.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-
 @Entity
+@Table(name = "users")
 @Data
 public class User {
 
@@ -13,7 +13,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private String fullName;
 
     @Column(unique = true, nullable = false)
     private String email;
