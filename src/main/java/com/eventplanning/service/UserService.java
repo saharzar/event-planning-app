@@ -18,7 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserResponse register(RegisterRequest request) {
+    public UserResponse register(RegisterRequest request, HttpSession session) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new EmailAlreadyExistsException("Email already in use: " + request.getEmail());
         }
@@ -29,7 +29,12 @@ public class UserService {
         user.setPassword(request.getPassword()); // plain text for now, can add hashing later
 
         User saved = userRepository.save(user);
+        session.setAttribute("userId", saved.getId());
         return mapToResponse(saved);
+    }
+
+    public UserResponse getCurrentUser(HttpSession session) {
+        return mapToResponse(getSessionUser(session));
     }
 
     public UserResponse login(LoginRequest request, HttpSession session) {

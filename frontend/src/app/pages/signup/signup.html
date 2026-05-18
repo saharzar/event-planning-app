@@ -1,0 +1,137 @@
+<div class="auth-page">
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7 col-lg-6">
+        <div class="auth-card">
+          <a routerLink="/" class="auth-brand-link d-inline-flex align-items-center gap-2 mb-4">
+            <span class="brand-icon"><i class="bi bi-calendar-event-fill"></i></span>
+            <span class="brand-text">Evently</span>
+          </a>
+
+          <h1 class="auth-title mb-2">Create your account</h1>
+          <p class="auth-subtitle mb-4">Join Evently to organize and discover meaningful events.</p>
+
+          @if (errorMessage()) {
+            <div class="alert alert-danger auth-alert" role="alert">
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="mb-3">
+              <label for="fullName" class="form-label">Full name</label>
+              <input
+                id="fullName"
+                type="text"
+                class="form-control"
+                formControlName="fullName"
+                placeholder="Jane Doe"
+                autocomplete="name"
+                [class.is-invalid]="form.controls.fullName.touched && form.controls.fullName.invalid"
+              />
+              @if (form.controls.fullName.touched && form.controls.fullName.hasError('required')) {
+                <div class="invalid-feedback d-block">Full name is required.</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                formControlName="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                [class.is-invalid]="form.controls.email.touched && form.controls.email.invalid"
+              />
+              @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+                <div class="invalid-feedback d-block">Email is required.</div>
+              }
+              @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+                <div class="invalid-feedback d-block">Please enter a valid email.</div>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <div class="position-relative">
+                <input
+                  id="password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  class="form-control pe-5"
+                  formControlName="password"
+                  placeholder="At least 6 characters"
+                  autocomplete="new-password"
+                  [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid"
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  (click)="togglePassword()"
+                  [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+                >
+                  <i [class]="showPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                </button>
+              </div>
+              @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+                <div class="invalid-feedback d-block">Password is required.</div>
+              }
+              @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+                <div class="invalid-feedback d-block">Password must be at least 6 characters.</div>
+              }
+            </div>
+
+            <div class="mb-4">
+              <label for="confirmPassword" class="form-label">Confirm password</label>
+              <input
+                id="confirmPassword"
+                [type]="showPassword() ? 'text' : 'password'"
+                class="form-control"
+                formControlName="confirmPassword"
+                placeholder="Repeat your password"
+                autocomplete="new-password"
+                [class.is-invalid]="
+                  (form.controls.confirmPassword.touched && form.controls.confirmPassword.invalid) ||
+                  (form.touched && form.hasError('passwordMismatch'))
+                "
+              />
+              @if (form.controls.confirmPassword.touched && form.controls.confirmPassword.hasError('required')) {
+                <div class="invalid-feedback d-block">Please confirm your password.</div>
+              }
+              @if (form.touched && form.hasError('passwordMismatch')) {
+                <div class="invalid-feedback d-block">Passwords do not match.</div>
+              }
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-gradient w-100 py-2 mb-3"
+              [disabled]="submitting()"
+            >
+              @if (submitting()) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Creating account...
+              } @else {
+                Sign Up
+              }
+            </button>
+          </form>
+
+          <p class="text-center mb-0 smaller text-secondary">
+            Already have an account?
+            <a routerLink="/login" class="auth-footer-link ms-1">Sign in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

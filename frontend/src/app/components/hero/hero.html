@@ -1,0 +1,97 @@
+<section id="home" class="hero-section section-padding pt-4 pb-5">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="hero-badge d-inline-flex align-items-center gap-2 mb-4">
+          <i class="bi bi-stars"></i>
+          <span>Smart Event Management</span>
+        </div>
+
+        <h1 class="hero-title fw-black tracking-tight mb-4">
+          Organize and Discover Meaningful
+          <span class="text-gradient">Events</span>
+        </h1>
+
+        <p class="hero-description mb-4">
+          Plan conferences, university gatherings, workshops, and networking sessions with
+          tools built for organizers and attendees who care about great experiences.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <button type="button" class="btn btn-gradient d-inline-flex align-items-center gap-2">
+            Explore Events
+            <i class="bi bi-arrow-right"></i>
+          </button>
+          <button type="button" class="btn btn-outline-soft d-inline-flex align-items-center gap-2">
+            <i class="bi bi-calendar-plus"></i>
+            Create Event
+          </button>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 hero-social">
+          <div class="avatar-stack d-flex">
+            @for (avatar of avatars(); track avatar; let i = $index) {
+              <img [src]="avatar" [alt]="'Community member ' + (i + 1)" class="avatar-img" />
+            }
+          </div>
+          <p class="mb-0 smaller text-secondary">
+            Join <strong>2,000+</strong> people already using Evently
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="hero-visual position-relative">
+          <div class="dashboard-mockup card-soft">
+            <div class="dashboard-inner d-flex">
+              <aside class="dashboard-sidebar">
+                <div class="sidebar-logo mb-4">
+                  <i class="bi bi-calendar-event-fill"></i>
+                </div>
+                <nav class="sidebar-nav">
+                  <a href="#" class="sidebar-link active"><i class="bi bi-grid-fill"></i> Dashboard</a>
+                  <a href="#" class="sidebar-link"><i class="bi bi-calendar3"></i> My Events</a>
+                  <a href="#" class="sidebar-link"><i class="bi bi-people"></i> Attendees</a>
+                  <a href="#" class="sidebar-link"><i class="bi bi-bar-chart"></i> Analytics</a>
+                  <a href="#" class="sidebar-link"><i class="bi bi-gear"></i> Settings</a>
+                </nav>
+              </aside>
+              <main class="dashboard-main flex-grow-1">
+                <h3 class="dashboard-heading">Upcoming Events</h3>
+                @for (event of upcomingPreview(); track event.title) {
+                  <div class="preview-event d-flex align-items-center gap-3">
+                    <span class="preview-dot" [style.background]="event.color"></span>
+                    <div class="flex-grow-1 min-w-0">
+                      <p class="preview-title mb-0">{{ event.title }}</p>
+                      <p class="preview-time mb-0">{{ event.time }}</p>
+                    </div>
+                    <i class="bi bi-chevron-right text-muted"></i>
+                  </div>
+                }
+              </main>
+            </div>
+          </div>
+
+          <div class="calendar-widget card-soft">
+            <div class="calendar-header d-flex justify-content-between align-items-center mb-2">
+              <span class="fw-semibold smaller">May 2026</span>
+              <i class="bi bi-chevron-down smaller text-muted"></i>
+            </div>
+            <div class="calendar-grid">
+              @for (day of ['S','M','T','W','T','F','S']; track day) {
+                <span class="cal-day-label">{{ day }}</span>
+              }
+              @for (n of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]; track n) {
+                <span class="cal-day" [class.cal-day-active]="n === 24">{{ n }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+

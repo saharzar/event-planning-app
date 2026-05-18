@@ -19,9 +19,16 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        UserResponse response = userService.register(request);
+    public ResponseEntity<UserResponse> register(
+            @Valid @RequestBody RegisterRequest request,
+            HttpSession session) {
+        UserResponse response = userService.register(request, session);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> me(HttpSession session) {
+        return ResponseEntity.ok(userService.getCurrentUser(session));
     }
 
     @PostMapping("/login")

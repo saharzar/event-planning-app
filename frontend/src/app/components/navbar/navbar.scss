@@ -1,0 +1,69 @@
+.evently-navbar {
+  z-index: 1030;
+  padding: 0.75rem 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+  transition: box-shadow 0.3s ease;
+
+  &.scrolled,
+  &:has(.show) {
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  }
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
+}
+
+.brand-text {
+  font-size: 1.35rem;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.user-greeting {
+  color: #64748b;
+  margin-right: 0.25rem;
+
+  strong {
+    color: #0f172a;
+  }
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #475569 !important;
+  position: relative;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #7c3aed !important;
+  }
+
+  &.active {
+    color: #3b82f6 !important;
+    font-weight: 600;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #7c3aed, #3b82f6);
+    }
+  }
+}

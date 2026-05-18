@@ -1,0 +1,19 @@
+<section class="stats-section section-padding py-0" id="about">
+  <div class="container" appFadeIn>
+    <div class="stats-card card-soft card-lift">
+      <div class="row g-4 g-lg-0 text-center">
+        @for (stat of items(); track stat.id) {
+          <div class="col-6 col-lg-3">
+            <div class="stat-item">
+              <div class="icon-circle mx-auto mb-3" [class]="stat.iconClass">
+                <i [class]="stat.icon"></i>
+              </div>
+              <p class="stat-value fw-black mb-1">{{ stat.value }}</p>
+              <p class="stat-label mb-0">{{ stat.label }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
