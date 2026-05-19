@@ -1,0 +1,106 @@
+<section class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+  <div>
+    <h1 class="page-title fw-black mb-2">My Events</h1>
+    <p class="text-secondary mb-0">Create, publish, and manage your events.</p>
+  </div>
+  <a routerLink="/create-event" class="btn btn-gradient"><i class="bi bi-plus-lg me-2"></i>Create Event</a>
+</section>
+
+<div class="filters-bar card-soft p-3 mb-4">
+  <label class="form-label mb-1" for="statusFilter">Filter by status</label>
+  <select id="statusFilter" class="form-select w-auto" [value]="statusFilter()" (change)="setStatusFilter($any($event.target).value)">
+    <option value="">All statuses</option>
+    @for (s of statuses; track s) {
+      @if (s) {
+        <option [value]="s">{{ s }}</option>
+      }
+    }
+  </select>
+</div>
+
+@if (loading()) {
+  <app-loading-state message="Loading your events..." />
+} @else if (filteredEvents().length === 0) {
+  <app-empty-state
+    icon="bi bi-calendar-plus"
+    title="No events found"
+    description="Create an event or adjust your status filter."
+  />
+} @else {
+  <div class="table-responsive panel-card card-soft">
+    <table class="table table-hover align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>When</th>
+          <th>Attendees</th>
+          <th>Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (event of filteredEvents(); track event.id) {
+          <tr [class.opacity-50]="actionLoadingId() === event.id">
+            <td>
+              <p class="fw-semibold mb-1">{{ event.title }}</p>
+              <p class="smaller text-secondary mb-0">{{ event.location }} · {{ event.category }}</p>
+            </td>
+            <td>
+              <p class="smaller mb-1">{{ event.date | date: 'mediumDate' }}</p>
+              <app-countdown-badge [date]="event.date" [time]="event.time" />
+            </td>
+            <td>
+              <span class="attendee-badge">
+                <i class="bi bi-people me-1"></i>{{ getAttendeeCount(event.id) }}
+              </span>
+            </td>
+            <td>
+              <app-status-badge [status]="event.status" [date]="event.date" [time]="event.time" />
+            </td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm flex-wrap justify-content-end">
+                <a [routerLink]="['/events', event.id]" class="btn btn-outline-soft">View</a>
+                <a [routerLink]="['/events', event.id, 'edit']" class="btn btn-outline-soft">Edit</a>
+                <button type="button" class="btn btn-outline-soft" (click)="openParticipants(event)">
+                  Participants
+                </button>
+                @if (event.status === 'DRAFT' || event.status === 'PAUSED') {
+                  <button type="button" class="btn btn-outline-soft text-success" (click)="publish(event.id)">Publish</button>
+                }
+                @if (event.status === 'PUBLISHED') {
+                  <button type="button" class="btn btn-outline-soft text-warning" (click)="pause(event.id)">Pause</button>
+                }
+                @if (event.status !== 'ARCHIVED') {
+                  <button type="button" class="btn btn-outline-soft" (click)="archive(event.id)">Archive</button>
+                }
+                <button type="button" class="btn btn-outline-soft text-danger" (click)="requestDelete(event.id, event.title)">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
+
+@if (participantsEvent(); as ev) {
+  <app-participants-modal
+    [eventId]="ev.id"
+    [eventTitle]="ev.title"
+    (closed)="closeParticipants()"
+  />
+}
+
+@if (deleteTarget(); as target) {
+  <app-confirm-modal
+    title="Delete event?"
+    [message]="deleteMessage()"
+    confirmLabel="Delete"
+    [danger]="true"
+    (confirmed)="confirmDelete()"
+    (cancelled)="cancelDelete()"
+  />
+}
+

@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,6 +17,7 @@ export class Login {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
@@ -44,7 +45,10 @@ export class Login {
       .login(this.form.getRawValue())
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
-        next: () => this.router.navigate(['/']),
+        next: () => {
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+          this.router.navigateByUrl(returnUrl);
+        },
         error: (error: HttpErrorResponse) =>
           this.errorMessage.set(getApiErrorMessage(error, 'Login failed. Please try again.')),
       });

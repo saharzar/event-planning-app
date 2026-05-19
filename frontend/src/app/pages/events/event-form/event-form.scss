@@ -1,0 +1,52 @@
+.page-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: #0f172a;
+}
+
+.form-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+}
+
+.breadcrumb-link {
+  color: #7c3aed;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    color: #3b82f6;
+  }
+}
+
+.breadcrumb-sep {
+  color: #cbd5e1;
+}
+
+.breadcrumb-current {
+  color: #64748b;
+}
+
+.form-card {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.form-card .form-control,
+.form-card .form-select {
+  border-radius: 12px;
+  border-color: #e2e8f0;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.form-cover-preview .event-cover {
+  height: 200px;
+  border-radius: 12px;
+}

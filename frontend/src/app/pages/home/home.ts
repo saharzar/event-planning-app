@@ -1,11 +1,10 @@
 import { Component, signal } from '@angular/core';
-import { Navbar } from '../../components/navbar/navbar';
+import { RouterLink } from '@angular/router';
 import { Hero } from '../../components/hero/hero';
 import { FeatureCard } from '../../components/feature-card/feature-card';
 import { Stats } from '../../components/stats/stats';
 import { EventCard } from '../../components/event-card/event-card';
 import { CtaBanner } from '../../components/cta-banner/cta-banner';
-import { Footer } from '../../components/footer/footer';
 import { FadeInDirective } from '../../core/directives/fade-in.directive';
 import { FEATURES_DATA } from '../../core/data/features.data';
 import { EVENTS_DATA } from '../../core/data/events.data';
@@ -18,13 +17,12 @@ import { StatItem } from '../../core/models/stat.model';
   selector: 'app-home',
   standalone: true,
   imports: [
-    Navbar,
+    RouterLink,
     Hero,
     FeatureCard,
     Stats,
     EventCard,
     CtaBanner,
-    Footer,
     FadeInDirective,
   ],
   templateUrl: './home.html',

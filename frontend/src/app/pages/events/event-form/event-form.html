@@ -1,0 +1,107 @@
+@if (loading()) {
+  <app-loading-state message="Loading event..." />
+} @else {
+  <nav class="form-breadcrumb mb-3" aria-label="Breadcrumb">
+    <a routerLink="/dashboard" class="breadcrumb-link"><i class="bi bi-grid me-1"></i> Dashboard</a>
+    <span class="breadcrumb-sep">/</span>
+    <a routerLink="/my-events" class="breadcrumb-link">My Events</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">{{ isEditMode() ? 'Edit' : 'Create' }}</span>
+  </nav>
+
+  <section class="mb-4">
+    <h1 class="page-title fw-black mb-1">
+      {{ isEditMode() ? 'Edit Event' : 'Create Event' }}
+    </h1>
+    <p class="text-secondary mb-0">
+      {{ isEditMode() ? 'Update your event details below.' : 'New events are saved as drafts until you publish them.' }}
+    </p>
+  </section>
+
+  <form class="form-card card-soft p-4 p-lg-5" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="row g-4">
+      <div class="col-12">
+        <label class="form-label" for="title">Event name *</label>
+        <input id="title" type="text" class="form-control" formControlName="title" placeholder="e.g. AI in Business Conference" />
+        @if (form.controls.title.touched && form.controls.title.invalid) {
+          <div class="invalid-feedback d-block">Event name is required.</div>
+        }
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="date">Date *</label>
+        <input id="date" type="date" class="form-control" formControlName="date" />
+        @if (form.controls.date.touched && form.controls.date.invalid) {
+          <div class="invalid-feedback d-block">Date is required.</div>
+        }
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="time">Time *</label>
+        <input id="time" type="time" class="form-control" formControlName="time" />
+        @if (form.controls.time.touched && form.controls.time.invalid) {
+          <div class="invalid-feedback d-block">Time is required.</div>
+        }
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="location">Location *</label>
+        <input id="location" type="text" class="form-control" formControlName="location" placeholder="Venue or address" />
+        @if (form.controls.location.touched && form.controls.location.invalid) {
+          <div class="invalid-feedback d-block">Location is required.</div>
+        }
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="category">Category *</label>
+        <select id="category" class="form-select" formControlName="category">
+          @for (cat of categories; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Event cover image</label>
+        <p class="smaller text-secondary mb-2">Optional. Upload a photo or leave blank for a default placeholder.</p>
+        <input
+          type="file"
+          class="form-control mb-2"
+          accept="image/*"
+          (change)="onImageFileChange($event)"
+        />
+        @if (imagePreview()) {
+          <div class="image-preview-wrap mb-2">
+            <app-event-cover class="form-cover-preview" [src]="imagePreview()" alt="Event cover preview" />
+            <button type="button" class="btn btn-sm btn-outline-soft mt-2" (click)="clearImage()">Remove image</button>
+          </div>
+        }
+      </div>
+
+      <div class="col-12">
+        <label class="form-label" for="description">Description</label>
+        <textarea
+          id="description"
+          class="form-control"
+          rows="5"
+          formControlName="description"
+          placeholder="Tell attendees what to expect..."
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-4 pt-2 border-top">
+      <button type="submit" class="btn btn-gradient" [disabled]="submitting()">
+        @if (submitting()) {
+          <span class="spinner-border spinner-border-sm me-2"></span> Saving...
+        } @else {
+          {{ isEditMode() ? 'Save Changes' : 'Create Event' }}
+        }
+      </button>
+      <a routerLink="/dashboard" class="btn btn-outline-soft">Back to Dashboard</a>
+      <a routerLink="/my-events" class="btn btn-outline-soft">My Events</a>
+    </div>
+  </form>
+}
+
+

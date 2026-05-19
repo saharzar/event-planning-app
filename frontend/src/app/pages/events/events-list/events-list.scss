@@ -1,0 +1,134 @@
+@use '../../../shared/styles/marketing-page';
+
+.filters-bar {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.filters-bar .form-control,
+.filters-bar .form-select,
+.filters-bar .input-group-text {
+  border-radius: 12px;
+  border-color: #e2e8f0;
+}
+
+.results-count {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+  padding-top: 0.5rem;
+
+  @media (min-width: 992px) {
+    padding-top: 2rem;
+  }
+}
+
+.event-tile {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.event-tile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.category-pill {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+}
+
+.published-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #059669;
+  background: rgba(16, 185, 129, 0.12);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.event-tile-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+
+  a {
+    color: #0f172a;
+    text-decoration: none;
+
+    &:hover {
+      color: #7c3aed;
+    }
+  }
+}
+
+.event-tile-desc {
+  font-size: 0.9rem;
+  color: #64748b;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.event-tile-meta li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.35rem;
+
+  i {
+    color: #94a3b8;
+  }
+}
+
+.event-tile-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.organizer {
+  color: #94a3b8;
+}
+
+.pagination-soft .page-link {
+  border-radius: 10px;
+  margin: 0 3px;
+  border: none;
+  color: #64748b;
+
+  &:hover {
+    background: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
+  }
+}
+
+.pagination-soft .page-item.active .page-link {
+  background: linear-gradient(135deg, #7c3aed, #3b82f6);
+  color: #fff;
+}

@@ -32,8 +32,6 @@ export const EVENTS_DATA: EventItem[] = [
     time: '6:30 PM – 9:30 PM',
     location: 'Downtown Business Lounge',
     category: 'Networking',
-    image:
-      'https://images.unsplash.com/photo-1515187024625-ed09d4fadb0e?auto=format&fit=crop&w=800&q=80',
     month: 'JUN',
     day: '15',
   },
@@ -44,8 +42,6 @@ export const EVENTS_DATA: EventItem[] = [
     time: '10:00 AM – 4:00 PM',
     location: 'State University Auditorium',
     category: 'Career',
-    image:
-      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80',
     month: 'JUL',
     day: '02',
   },

@@ -1,0 +1,55 @@
+<div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h2 class="modal-title h5 fw-bold mb-1">Participants</h2>
+          <p class="text-secondary smaller mb-0">{{ eventTitle() }}</p>
+        </div>
+        <button type="button" class="btn-close" (click)="close()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-3">
+        @if (loading()) {
+          <app-loading-state message="Loading participants..." [compact]="true" />
+        } @else if (participants().length === 0) {
+          <app-empty-state
+            icon="bi bi-people"
+            title="No participants yet"
+            description="When users join this event, they will appear here."
+          />
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of participants(); track p.id) {
+                  <tr>
+                    <td class="fw-semibold">{{ p.user.fullName }}</td>
+                    <td class="text-secondary">{{ p.user.email }}</td>
+                    <td class="text-secondary smaller">{{ p.joinedAt | date: 'medium' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-soft" (click)="close()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show" (click)="close()"></div>
+
+
+
+
+
+

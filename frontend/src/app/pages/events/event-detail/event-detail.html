@@ -1,0 +1,160 @@
+@if (loading()) {
+  <app-loading-state message="Loading event..." />
+} @else if (event(); as ev) {
+  <div class="event-detail-page section-padding pt-4 pb-5">
+    <div class="container">
+      <a routerLink="/events" class="back-link d-inline-flex align-items-center gap-1 mb-4">
+        <i class="bi bi-arrow-left"></i> Back to events
+      </a>
+
+      <div class="event-banner-wrap mb-4">
+        <app-event-cover [src]="ev.imageUrl" [alt]="ev.title" variant="banner" />
+        <div class="event-banner-overlay">
+          <app-countdown-badge [date]="ev.date" [time]="ev.time" />
+          <span class="category-pill">{{ ev.category }}</span>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="detail-card card-soft p-4 p-lg-5">
+            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+              <app-status-badge [status]="ev.status" [date]="ev.date" [time]="ev.time" />
+              <span class="attendee-chip">
+                <i class="bi bi-people-fill me-1"></i>{{ participantCount() }} attending
+              </span>
+            </div>
+            <h1 class="detail-title fw-black mb-3">{{ ev.title }}</h1>
+            <p class="detail-description">{{ ev.description || 'No description provided.' }}</p>
+
+            <div class="info-grid mt-4">
+              <div class="info-item">
+                <i class="bi bi-calendar3"></i>
+                <div>
+                  <span class="info-label">Date</span>
+                  <span class="info-value">{{ ev.date | date: 'fullDate' }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="bi bi-clock"></i>
+                <div>
+                  <span class="info-label">Time</span>
+                  <span class="info-value">{{ ev.time }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="bi bi-geo-alt"></i>
+                <div>
+                  <span class="info-label">Location</span>
+                  <span class="info-value">{{ ev.location }}</span>
+                </div>
+              </div>
+              <div class="info-item">
+                <i class="bi bi-person-badge"></i>
+                <div>
+                  <span class="info-label">Organizer</span>
+                  <span class="info-value">{{ ev.organizer.fullName }}</span>
+                </div>
+              </div>
+            </div>
+
+            @if (isOwner() && participants().length > 0) {
+              <div class="attendees-section mt-4 pt-4 border-top">
+                <button
+                  type="button"
+                  class="btn btn-link p-0 text-decoration-none fw-semibold d-flex align-items-center gap-2"
+                  (click)="toggleAttendees()"
+                >
+                  <i class="bi bi-people"></i>
+                  Attendees ({{ participants().length }})
+                  <i [class]="showAttendeesList() ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
+                </button>
+                @if (showAttendeesList()) {
+                  <div class="table-responsive mt-3">
+                    <table class="table table-sm align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Joined</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (p of participants(); track p.id) {
+                          <tr>
+                            <td class="fw-semibold">{{ p.user.fullName }}</td>
+                            <td class="text-secondary smaller">{{ p.user.email }}</td>
+                            <td class="text-secondary smaller">{{ p.joinedAt | date: 'medium' }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="detail-sidebar card-soft p-4 sticky-sidebar">
+            <h2 class="h6 fw-bold mb-3">Registration</h2>
+
+            @if (isOwner()) {
+              <p class="smaller text-secondary mb-3">You are the organizer of this event.</p>
+              <div class="d-grid gap-2">
+                <a [routerLink]="['/events', ev.id, 'edit']" class="btn btn-gradient">Edit event</a>
+                <a routerLink="/my-events" class="btn btn-outline-soft">Manage in My Events</a>
+              </div>
+            } @else if (hasJoined()) {
+              <div class="joined-state text-center py-3 mb-3">
+                <i class="bi bi-check-circle-fill text-success display-6"></i>
+                <p class="fw-bold mb-0 mt-2">You're going!</p>
+                <p class="smaller text-secondary mb-0">You have joined this event.</p>
+              </div>
+              <button
+                type="button"
+                class="btn btn-outline-soft w-100 text-danger"
+                [disabled]="leaving()"
+                (click)="leaveEvent()"
+              >
+                @if (leaving()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span> Leaving...
+                } @else {
+                  Leave Event
+                }
+              </button>
+            } @else if (canJoin()) {
+              <p class="smaller text-secondary mb-3">Reserve your spot for this published event.</p>
+              <button
+                type="button"
+                class="btn btn-gradient w-100"
+                [disabled]="joining()"
+                (click)="joinEvent()"
+              >
+                @if (joining()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span> Joining...
+                } @else {
+                  <i class="bi bi-check-circle me-2"></i> Join Event
+                }
+              </button>
+            } @else if (!isLoggedIn()) {
+              <p class="smaller text-secondary mb-3">Sign in to join this event.</p>
+              <a
+                [routerLink]="['/login']"
+                [queryParams]="{ returnUrl: '/events/' + ev.id }"
+                class="btn btn-gradient w-100"
+              >
+                Sign in to join
+              </a>
+            } @else {
+              <p class="smaller text-secondary mb-0">This event is not open for registration.</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+

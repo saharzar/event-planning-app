@@ -1,0 +1,28 @@
+.countdown-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.countdown-upcoming {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.countdown-soon {
+  background: rgba(249, 115, 22, 0.12);
+  color: #ea580c;
+}
+
+.countdown-today {
+  background: rgba(249, 115, 22, 0.15);
+  color: #c2410c;
+}
+
+.countdown-ended {
+  background: rgba(100, 116, 139, 0.15);
+  color: #64748b;
+}

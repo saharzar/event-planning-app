@@ -1,17 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { ConfirmModal } from '../../shared/components/confirm-modal/confirm-modal';
 
 interface NavLink {
   label: string;
-  href: string;
-  active?: boolean;
+  route: string;
 }
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive, ConfirmModal],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
@@ -20,16 +20,26 @@ export class Navbar {
   private readonly router = inject(Router);
 
   readonly navLinks = signal<NavLink[]>([
-    { label: 'Home', href: '/#home', active: true },
-    { label: 'Events', href: '/#events' },
-    { label: 'Categories', href: '/#categories' },
-    { label: 'About', href: '/#about' },
-    { label: 'Contact', href: '/#contact' },
+    { label: 'Home', route: '/' },
+    { label: 'Events', route: '/events' },
+    { label: 'Categories', route: '/categories' },
+    { label: 'About', route: '/about' },
+    { label: 'Contact', route: '/contact' },
   ]);
 
   readonly currentUser = this.auth.currentUser;
+  readonly showLogoutConfirm = signal(false);
 
-  logout(): void {
+  requestLogout(): void {
+    this.showLogoutConfirm.set(true);
+  }
+
+  cancelLogout(): void {
+    this.showLogoutConfirm.set(false);
+  }
+
+  confirmLogout(): void {
+    this.showLogoutConfirm.set(false);
     this.auth.logout().subscribe({
       next: () => this.router.navigate(['/']),
     });

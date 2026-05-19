@@ -1,0 +1,166 @@
+@if (loading()) {
+  <app-loading-state message="Loading your dashboard..." />
+} @else {
+  <section class="dashboard-header mb-4">
+    <p class="text-secondary mb-1">Welcome back</p>
+    <h1 class="page-title fw-black mb-0">Hello, {{ currentUser()?.fullName }}</h1>
+    <p class="text-secondary mt-2 mb-0">Here's what's happening with your events.</p>
+  </section>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-xl">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+        <div>
+          <p class="stat-label">Created</p>
+          <p class="stat-value">{{ stats().totalCreated }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-xl">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-green"><i class="bi bi-check-circle"></i></div>
+        <div>
+          <p class="stat-label">Published</p>
+          <p class="stat-value text-success">{{ stats().published }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-xl">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-amber"><i class="bi bi-pencil"></i></div>
+        <div>
+          <p class="stat-label">Drafts</p>
+          <p class="stat-value">{{ stats().draft }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-xl">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-purple"><i class="bi bi-heart"></i></div>
+        <div>
+          <p class="stat-label">Joined</p>
+          <p class="stat-value">{{ stats().joined }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-xl">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-blue"><i class="bi bi-lightning"></i></div>
+        <div>
+          <p class="stat-label">Upcoming</p>
+          <p class="stat-value">{{ stats().upcoming }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-4">
+      <div class="panel-card h-100 p-4">
+        <h2 class="h6 fw-bold mb-3">Quick actions</h2>
+        <div class="d-grid gap-2">
+          <a routerLink="/create-event" class="btn btn-gradient">
+            <i class="bi bi-plus-lg me-2"></i>Create Event
+          </a>
+          <a routerLink="/dashboard/joined-events" class="btn btn-outline-soft">
+            <i class="bi bi-heart me-2"></i>Joined Events
+          </a>
+          <a routerLink="/my-events" class="btn btn-outline-soft">
+            <i class="bi bi-calendar-check me-2"></i>My Events
+          </a>
+          <a routerLink="/events" class="btn btn-outline-soft">
+            <i class="bi bi-search me-2"></i>Browse Events
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="panel-card h-100 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h6 fw-bold mb-0">Recently joined</h2>
+          <a routerLink="/dashboard/joined-events" class="smaller fw-semibold text-decoration-none">View all</a>
+        </div>
+        @if (recentJoined().length === 0) {
+          <p class="text-secondary smaller mb-0">You haven't joined any events yet.</p>
+        } @else {
+          <ul class="activity-list list-unstyled mb-0">
+            @for (a of recentJoined(); track a.id) {
+              <li class="activity-item">
+                <a [routerLink]="['/events', a.event.id]" class="activity-link">
+                  <div class="flex-grow-1">
+                    <p class="fw-semibold mb-0">{{ a.event.title }}</p>
+                    <p class="smaller text-secondary mb-0">
+                      {{ a.event.date | date: 'mediumDate' }} · {{ a.event.location }}
+                    </p>
+                  </div>
+                  <app-countdown-badge [date]="a.event.date" [time]="a.event.time" />
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="panel-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h6 fw-bold mb-0">Recently created</h2>
+          <a routerLink="/my-events" class="smaller fw-semibold text-decoration-none">Manage</a>
+        </div>
+        @if (recentCreated().length === 0) {
+          <app-empty-state
+            icon="bi bi-calendar-plus"
+            title="No events yet"
+            description="Create your first event to get started."
+          />
+        } @else {
+          <ul class="activity-list list-unstyled mb-0">
+            @for (event of recentCreated(); track event.id) {
+              <li class="activity-item">
+                <div class="d-flex justify-content-between align-items-center gap-2">
+                  <div>
+                    <p class="fw-semibold mb-0">{{ event.title }}</p>
+                    <p class="smaller text-secondary mb-0">{{ event.date | date: 'mediumDate' }}</p>
+                  </div>
+                  <app-status-badge [status]="event.status" [date]="event.date" [time]="event.time" />
+                </div>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="panel-card p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h6 fw-bold mb-0">Discover events</h2>
+          <a routerLink="/events" class="smaller fw-semibold text-decoration-none">Browse</a>
+        </div>
+        @if (publishedBrowse().length === 0) {
+          <p class="text-secondary smaller mb-0">No published events available.</p>
+        } @else {
+          <ul class="activity-list list-unstyled mb-0">
+            @for (event of publishedBrowse(); track event.id) {
+              <li class="activity-item">
+                <a [routerLink]="['/events', event.id]" class="activity-link">
+                  <div class="flex-grow-1">
+                    <p class="fw-semibold mb-0">{{ event.title }}</p>
+                    <p class="smaller text-secondary mb-0">{{ event.location }}</p>
+                  </div>
+                  <span class="badge bg-light text-primary">{{ event.category }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+

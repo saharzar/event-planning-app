@@ -6,11 +6,14 @@
   padding: 0.75rem 0.75rem 0;
 }
 
-.event-image {
-  height: 200px;
-  object-fit: cover;
-  border-radius: 1rem;
+.featured-cover {
   display: block;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.featured-cover .event-cover {
+  height: 200px;
 }
 
 .date-badge {

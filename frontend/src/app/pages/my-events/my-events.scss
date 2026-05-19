@@ -1,0 +1,23 @@
+.page-title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  color: #0f172a;
+}
+
+.panel-card {
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  overflow: hidden;
+}
+
+.attendee-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.filters-bar .form-select {
+  border-radius: 12px;
+  min-width: 180px;
+}

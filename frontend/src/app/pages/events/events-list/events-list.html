@@ -1,0 +1,98 @@
+<section class="page-hero section-padding pt-5 pb-4" appFadeIn>
+  <div class="container">
+    <span class="page-hero-badge"><i class="bi bi-calendar-week"></i> Published events</span>
+    <h1 class="page-hero-title">Discover your next <span class="text-gradient">experience</span></h1>
+    <p class="page-hero-text">
+      Browse conferences, workshops, networking nights, and university events — all in one place.
+    </p>
+  </div>
+</section>
+
+<section class="section-padding pt-0 pb-5">
+  <div class="container">
+    <div class="filters-bar mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-lg-5">
+          <label class="form-label" for="search">Search</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search text-secondary"></i></span>
+            <input
+              id="search"
+              type="search"
+              class="form-control"
+              placeholder="Search by title..."
+              [ngModel]="searchQuery()"
+              (ngModelChange)="onSearchInput($event)"
+            />
+          </div>
+        </div>
+        <div class="col-md-4 col-lg-3">
+          <label class="form-label" for="category">Category</label>
+          <select
+            id="category"
+            class="form-select"
+            [ngModel]="categoryFilter()"
+            (ngModelChange)="onCategoryChange($event)"
+          >
+            <option value="">All categories</option>
+            @for (cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-4 col-lg-2">
+          <label class="form-label" for="timeFilter">When</label>
+          <select
+            id="timeFilter"
+            class="form-select"
+            [ngModel]="timeFilter()"
+            (ngModelChange)="onTimeFilterChange($event)"
+          >
+            <option value="upcoming">Upcoming</option>
+            <option value="past">Past</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+        <div class="col-lg-2">
+          <p class="results-count mb-0">{{ filteredEvents().length }} shown</p>
+        </div>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <app-loading-state message="Loading events..." />
+    } @else if (filteredEvents().length === 0) {
+      <app-empty-state
+        icon="bi bi-calendar-x"
+        title="No events found"
+        description="Try adjusting your search or filters."
+      />
+    } @else {
+      <div class="row g-4">
+        @for (event of filteredEvents(); track event.id) {
+          <div class="col-md-6 col-xl-4">
+            <app-event-card-api [event]="event" [attendeeCount]="getAttendeeCount(event.id)" />
+          </div>
+        }
+      </div>
+      @if (totalPages() > 1 && timeFilter() === 'upcoming') {
+        <nav class="mt-5 d-flex justify-content-center" aria-label="Events pagination">
+          <ul class="pagination pagination-soft mb-0">
+            <li class="page-item" [class.disabled]="page() === 0">
+              <button type="button" class="page-link" (click)="goToPage(page() - 1)">Previous</button>
+            </li>
+            @for (p of pageNumbers(); track p) {
+              <li class="page-item" [class.active]="page() === p">
+                <button type="button" class="page-link" (click)="goToPage(p)">{{ p + 1 }}</button>
+              </li>
+            }
+            <li class="page-item" [class.disabled]="page() >= totalPages() - 1">
+              <button type="button" class="page-link" (click)="goToPage(page() + 1)">Next</button>
+            </li>
+          </ul>
+        </nav>
+      }
+    }
+  </div>
+</section>
+

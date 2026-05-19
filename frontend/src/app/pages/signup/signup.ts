@@ -60,7 +60,7 @@ export class Signup {
       .register({ fullName, email, password })
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
-        next: () => this.router.navigate(['/']),
+        next: () => this.router.navigate(['/dashboard']),
         error: (error: HttpErrorResponse) =>
           this.errorMessage.set(getApiErrorMessage(error, 'Registration failed. Please try again.')),
       });

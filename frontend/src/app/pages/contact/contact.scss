@@ -1,0 +1,24 @@
+@use '../../shared/styles/marketing-page';
+
+.contact-info li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: #64748b;
+
+  i {
+    color: #7c3aed;
+    font-size: 1.1rem;
+  }
+}
+
+.form-control,
+.form-label {
+  border-radius: 12px;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
