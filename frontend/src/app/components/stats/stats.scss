@@ -1,0 +1,25 @@
+.stats-card {
+  padding: 2.5rem 2rem;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+@media (min-width: 992px) {
+  .stat-item {
+    border-right: 1px solid #f1f5f9;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+}

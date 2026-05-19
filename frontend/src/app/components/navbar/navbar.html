@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-light sticky-top evently-navbar">
+  <div class="container px-lg-4">
+    <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/">
+      <span class="brand-icon">
+        <i class="bi bi-calendar-event-fill"></i>
+      </span>
+      <span class="brand-text fw-bold">Evently</span>
+    </a>
+
+    <button
+      class="navbar-toggler border-0 shadow-none"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#eventlyNav"
+      aria-controls="eventlyNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="eventlyNav">
+      <ul class="navbar-nav mx-auto gap-lg-1">
+        @for (link of navLinks(); track link.label) {
+          <li class="nav-item">
+            <a class="nav-link px-3" [class.active]="link.active" [href]="link.href">
+              {{ link.label }}
+            </a>
+          </li>
+        }
+      </ul>
+
+      <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+        @if (currentUser(); as user) {
+          <span class="user-greeting smaller d-none d-md-inline">
+            Hi, <strong>{{ user.fullName }}</strong>
+          </span>
+          <button type="button" class="btn btn-ghost btn-sm px-4" (click)="logout()">Logout</button>
+        } @else {
+          <a routerLink="/login" class="btn btn-ghost btn-sm px-4">Login</a>
+          <a routerLink="/signup" class="btn btn-gradient btn-sm px-4">Sign Up</a>
+        }
+      </div>
+    </div>
+  </div>
+</nav>

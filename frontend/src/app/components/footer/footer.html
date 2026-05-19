@@ -1,0 +1,59 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="row g-5 py-5">
+      <div class="col-lg-4">
+        <a href="#home" class="footer-brand d-flex align-items-center gap-2 text-decoration-none mb-3">
+          <span class="brand-icon">
+            <i class="bi bi-calendar-event-fill"></i>
+          </span>
+          <span class="brand-text fw-bold">Evently</span>
+        </a>
+        <p class="footer-desc">
+          The modern platform for organizing and discovering conferences, workshops,
+          university events, and professional networking.
+        </p>
+        <div class="social-links d-flex gap-2">
+          @for (social of socialLinks(); track social.label) {
+            <a [href]="social.href" class="social-btn" [attr.aria-label]="social.label">
+              <i [class]="'bi ' + social.icon"></i>
+            </a>
+          }
+        </div>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-links list-unstyled">
+          @for (link of quickLinks(); track link.label) {
+            <li><a [href]="link.href">{{ link.label }}</a></li>
+          }
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h4 class="footer-heading">Support</h4>
+        <ul class="footer-links list-unstyled">
+          @for (link of supportLinks(); track link.label) {
+            <li><a [href]="link.href">{{ link.label }}</a></li>
+          }
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h4 class="footer-heading">Stay Updated</h4>
+        <p class="footer-desc smaller mb-3">Get the latest events and tips in your inbox.</p>
+        <form class="newsletter-form d-flex gap-2" (submit)="$event.preventDefault()">
+          <input
+            type="email"
+            class="form-control rounded-pill border-0"
+            placeholder="Enter your email"
+            aria-label="Email address"
+          />
+          <button type="submit" class="btn btn-gradient rounded-pill px-4 flex-shrink-0">
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom py-4 text-center">
+      <p class="mb-0 smaller">&copy; {{ currentYear }} Evently. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
