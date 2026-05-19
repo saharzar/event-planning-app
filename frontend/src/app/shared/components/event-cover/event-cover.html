@@ -1,0 +1,15 @@
+<div class="event-cover" [class.event-cover--placeholder]="usePlaceholder()">
+  @if (usePlaceholder()) {
+    <div class="event-cover__placeholder" aria-hidden="true">
+      <i class="bi bi-calendar-event"></i>
+    </div>
+  } @else {
+    <img
+      class="event-cover__img"
+      [src]="displaySrc()"
+      [alt]="alt()"
+      loading="lazy"
+      (error)="onError()"
+    />
+  }
+</div>

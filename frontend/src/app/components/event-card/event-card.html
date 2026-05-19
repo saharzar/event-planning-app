@@ -1,6 +1,6 @@
 <article class="event-card card-soft card-lift h-100 d-flex flex-column">
   <div class="event-image-wrap position-relative">
-    <img [src]="event().image" [alt]="event().title" class="event-image w-100" loading="lazy" />
+    <app-event-cover class="featured-cover" [src]="event().image" [alt]="event().title" />
     <div class="date-badge">
       <span class="date-month">{{ event().month }}</span>
       <span class="date-day">{{ event().day }}</span>
@@ -26,3 +26,8 @@
     <button type="button" class="btn btn-outline-soft w-100 mt-auto">View Details</button>
   </div>
 </article>
+
+
+
+
+

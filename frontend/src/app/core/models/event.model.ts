@@ -7,7 +7,7 @@ export interface EventItem {
   time: string;
   location: string;
   category: EventCategory;
-  image: string;
+  image?: string;
   month: string;
   day: string;
 }

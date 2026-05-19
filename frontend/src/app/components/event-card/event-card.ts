@@ -1,9 +1,11 @@
 import { Component, computed, input } from '@angular/core';
 import { EventItem } from '../../core/models/event.model';
+import { EventCover } from '../../shared/components/event-cover/event-cover';
 
 @Component({
   selector: 'app-event-card',
   standalone: true,
+  imports: [EventCover],
   templateUrl: './event-card.html',
   styleUrl: './event-card.scss',
 })

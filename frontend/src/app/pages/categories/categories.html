@@ -1,0 +1,38 @@
+<section class="page-hero section-padding pt-5 pb-4" appFadeIn>
+  <div class="container">
+    <span class="page-hero-badge"><i class="bi bi-grid-3x3-gap"></i> Categories</span>
+    <h1 class="page-hero-title">Find events by <span class="text-gradient">interest</span></h1>
+    <p class="page-hero-text">
+      From conferences to campus workshops — browse published events filtered by what matters to you.
+    </p>
+    <a routerLink="/events" class="btn btn-gradient">Browse all events</a>
+  </div>
+</section>
+
+<section class="section-padding pt-0 pb-5">
+  <div class="container">
+    <div class="row g-4">
+      @for (cat of categories; track cat.name) {
+        <div class="col-sm-6 col-lg-4 col-xl-3">
+          <article class="content-card">
+            <div class="content-icon icon-purple">
+              <i [class]="'bi ' + cat.icon"></i>
+            </div>
+            <h2 class="h5 fw-bold mb-2">{{ cat.name }}</h2>
+            <p class="text-secondary smaller mb-3">{{ cat.description }}</p>
+            <a
+              [routerLink]="['/events']"
+              [queryParams]="{ category: cat.name }"
+              class="fw-semibold smaller text-decoration-none"
+            >
+              View events <i class="bi bi-arrow-right"></i>
+            </a>
+          </article>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+
+

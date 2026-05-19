@@ -1,54 +1,46 @@
-<div class="landing-page position-relative min-vh-100 d-flex flex-column">
-  <div class="bg-blobs" aria-hidden="true">
-    <div class="blob-1"></div>
-    <div class="blob-2"></div>
+<app-hero />
+
+<section class="features-section section-padding" appFadeIn>
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title fw-black tracking-tight mb-2">Everything you need to run great events</h2>
+      <p class="section-subtitle mx-auto">Powerful tools for organizers and a seamless experience for attendees.</p>
+    </div>
+    <div class="row g-4">
+      @for (feature of features(); track feature.id) {
+        <div class="col-sm-6 col-lg-3">
+          <app-feature-card [feature]="feature" />
+        </div>
+      }
+    </div>
   </div>
+</section>
 
-  <app-navbar />
+<app-stats [items]="stats()" />
 
-  <main class="flex-grow-1 position-relative" style="z-index: 1">
-    <app-hero />
-
-    <section class="features-section section-padding" id="categories" appFadeIn>
-      <div class="container">
-        <div class="row g-4">
-          @for (feature of features(); track feature.id) {
-            <div class="col-sm-6 col-lg-3">
-              <app-feature-card [feature]="feature" />
-            </div>
-          }
-        </div>
+<section class="events-section section-padding bg-light-subtle" appFadeIn>
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
+      <div>
+        <h2 class="section-title fw-black tracking-tight mb-2">Featured events</h2>
+        <p class="section-subtitle mb-0">A preview of what's happening — explore the full catalog.</p>
       </div>
-    </section>
-
-    <app-stats [items]="stats()" />
-
-    <section class="events-section section-padding" id="events" appFadeIn>
-      <div class="container">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-5">
-          <div>
-            <h2 class="section-title fw-black tracking-tight mb-2">Upcoming Events</h2>
-            <p class="section-subtitle mb-0">
-              Discover conferences, workshops, and networking opportunities near you.
-            </p>
-          </div>
-          <a href="#events" class="view-all-link fw-semibold text-decoration-none">
-            View all events
-            <i class="bi bi-arrow-right ms-1"></i>
-          </a>
+      <a routerLink="/events" class="view-all-link fw-semibold text-decoration-none">
+        View all events
+        <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+    <div class="row g-4">
+      @for (event of events(); track event.id) {
+        <div class="col-sm-6 col-lg-3">
+          <app-event-card [event]="event" />
         </div>
-        <div class="row g-4">
-          @for (event of events(); track event.id) {
-            <div class="col-sm-6 col-lg-3">
-              <app-event-card [event]="event" />
-            </div>
-          }
-        </div>
-      </div>
-    </section>
+      }
+    </div>
+  </div>
+</section>
 
-    <app-cta-banner />
-  </main>
+<app-cta-banner />
 
-  <app-footer />
-</div>
+
+

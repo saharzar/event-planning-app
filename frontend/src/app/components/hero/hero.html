@@ -18,11 +18,15 @@
         </p>
 
         <div class="d-flex flex-wrap gap-3 mb-4">
-          <button type="button" class="btn btn-gradient d-inline-flex align-items-center gap-2">
+          <a routerLink="/events" class="btn btn-gradient d-inline-flex align-items-center gap-2">
             Explore Events
             <i class="bi bi-arrow-right"></i>
-          </button>
-          <button type="button" class="btn btn-outline-soft d-inline-flex align-items-center gap-2">
+          </a>
+          <button
+            type="button"
+            class="btn btn-outline-soft d-inline-flex align-items-center gap-2"
+            (click)="createEvent()"
+          >
             <i class="bi bi-calendar-plus"></i>
             Create Event
           </button>
@@ -91,6 +95,11 @@
     </div>
   </div>
 </section>
+
+
+
+
+
 
 
 

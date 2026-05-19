@@ -1,0 +1,125 @@
+.event-detail-page {
+  background: linear-gradient(180deg, #f8fafc 0%, #fff 40%);
+}
+
+.back-link {
+  color: #7c3aed;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #3b82f6;
+  }
+}
+
+.event-banner-wrap {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 20px 48px rgba(124, 58, 237, 0.12);
+}
+
+.event-banner-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(transparent, rgba(15, 23, 42, 0.65));
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.event-banner-overlay .category-pill {
+  background: rgba(255, 255, 255, 0.95);
+  color: #7c3aed;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+}
+
+.detail-card {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.detail-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.detail-description {
+  color: #475569;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  font-size: 1.05rem;
+}
+
+.attendee-chip {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.info-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+
+  > i {
+    font-size: 1.25rem;
+    color: #7c3aed;
+    margin-top: 2px;
+  }
+}
+
+.info-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.info-value {
+  display: block;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.detail-sidebar {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.sticky-sidebar {
+  position: sticky;
+  top: 88px;
+}
+
+.joined-state {
+  background: rgba(16, 185, 129, 0.08);
+  border-radius: 1rem;
+}
+
+@media (max-width: 991.98px) {
+  .sticky-sidebar {
+    position: static;
+  }
+}

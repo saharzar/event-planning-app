@@ -1,0 +1,68 @@
+<div class="app-shell">
+  <aside class="app-sidebar" [class.show]="sidebarOpen()">
+    <div class="sidebar-header px-3 py-4">
+      <a routerLink="/dashboard" class="sidebar-brand d-flex align-items-center gap-2 text-decoration-none">
+        <span class="brand-icon"><i class="bi bi-calendar-event-fill"></i></span>
+        <span class="brand-text fw-bold">Evently</span>
+      </a>
+    </div>
+    <nav class="sidebar-nav px-2 flex-grow-1">
+      @for (item of navItems(); track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="sidebar-link"
+          (click)="closeSidebar()"
+        >
+          <i [class]="'bi ' + item.icon"></i>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+    <div class="sidebar-footer px-3 py-3">
+      <a routerLink="/" class="sidebar-link smaller">
+        <i class="bi bi-house"></i> Back to home
+      </a>
+    </div>
+  </aside>
+
+  @if (sidebarOpen()) {
+    <div class="sidebar-backdrop d-lg-none" (click)="closeSidebar()"></div>
+  }
+
+  <div class="app-main">
+    <header class="app-topbar d-flex align-items-center justify-content-between">
+      <button type="button" class="btn btn-light border d-lg-none" (click)="toggleSidebar()" aria-label="Menu">
+        <i class="bi bi-list"></i>
+      </button>
+      <a routerLink="/" class="btn btn-outline-soft btn-sm">
+        <i class="bi bi-house-door me-1"></i> Landing page
+      </a>
+      <div class="d-flex align-items-center gap-2 gap-md-3">
+        @if (currentUser(); as user) {
+          <span class="topbar-user smaller d-none d-md-inline">Hi, <strong>{{ user.fullName }}</strong></span>
+        }
+        <a routerLink="/create-event" class="btn btn-gradient btn-sm d-none d-sm-inline-flex">
+          <i class="bi bi-plus-lg me-1"></i> New Event
+        </a>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="requestLogout()">Logout</button>
+      </div>
+    </header>
+    <main class="app-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+@if (showLogoutConfirm()) {
+  <app-confirm-modal
+    title="Log out?"
+    message="Are you sure you want to log out of your account?"
+    confirmLabel="Log out"
+    [danger]="true"
+    (confirmed)="confirmLogout()"
+    (cancelled)="cancelLogout()"
+  />
+}
+

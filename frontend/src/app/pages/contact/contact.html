@@ -1,0 +1,51 @@
+<section class="page-hero section-padding pt-5 pb-4" appFadeIn>
+  <div class="container">
+    <span class="page-hero-badge"><i class="bi bi-envelope"></i> Contact</span>
+    <h1 class="page-hero-title">We'd love to <span class="text-gradient">hear from you</span></h1>
+    <p class="page-hero-text">
+      Questions about Evently, partnerships, or support? Send us a message and our team will respond shortly.
+    </p>
+  </div>
+</section>
+
+<section class="section-padding pt-0 pb-5">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-5">
+        <div class="content-card h-100">
+          <h2 class="h5 fw-bold mb-3">Get in touch</h2>
+          <ul class="list-unstyled contact-info mb-0">
+            <li><i class="bi bi-envelope"></i> support@evently.com</li>
+            <li><i class="bi bi-geo-alt"></i> Available worldwide</li>
+            <li><i class="bi bi-clock"></i> Mon–Fri, 9am–6pm</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <form class="content-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="name">Name</label>
+              <input id="name" type="text" class="form-control" formControlName="name" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="email">Email</label>
+              <input id="email" type="email" class="form-control" formControlName="email" />
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="subject">Subject</label>
+              <input id="subject" type="text" class="form-control" formControlName="subject" />
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="message">Message</label>
+              <textarea id="message" class="form-control" rows="5" formControlName="message"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-gradient mt-4">Send message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+

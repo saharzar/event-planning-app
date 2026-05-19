@@ -1,0 +1,37 @@
+<article class="event-card-api card-lift h-100 d-flex flex-column">
+  <a [routerLink]="['/events', event().id]" class="event-card-image-wrap">
+    <app-event-cover [src]="coverSrc()" [alt]="event().title" />
+    <div class="event-card-badges">
+      <app-countdown-badge [date]="event().date" [time]="event().time" />
+    </div>
+  </a>
+  <div class="event-card-body p-4 d-flex flex-column flex-grow-1">
+    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+      <span class="category-pill">{{ event().category }}</span>
+      <app-status-badge [status]="event().status" [date]="event().date" [time]="event().time" />
+    </div>
+    <h3 class="event-card-title h6 fw-bold mb-2">
+      <a [routerLink]="['/events', event().id]" class="text-decoration-none text-dark stretched-link">
+        {{ event().title }}
+      </a>
+    </h3>
+    <p class="event-card-desc smaller text-secondary flex-grow-1 mb-3">
+      {{ event().description || 'No description provided.' }}
+    </p>
+    <ul class="event-card-meta list-unstyled smaller text-secondary mb-3">
+      <li><i class="bi bi-calendar3 me-2"></i>{{ event().date | date: 'mediumDate' }}</li>
+      <li><i class="bi bi-geo-alt me-2"></i>{{ event().location }}</li>
+      <li><i class="bi bi-person me-2"></i>{{ event().organizer.fullName }}</li>
+      @if (attendeeCount() !== null) {
+        <li><i class="bi bi-people me-2"></i>{{ attendeeCount() }} attending</li>
+      }
+    </ul>
+    <div class="d-flex gap-2 mt-auto position-relative" style="z-index: 2">
+      <a [routerLink]="['/events', event().id]" class="btn btn-sm btn-outline-soft flex-grow-1">View Details</a>
+      @if (showLeave()) {
+        <button type="button" class="btn btn-sm btn-outline-soft text-danger" (click)="onLeave()">Leave</button>
+      }
+    </div>
+  </div>
+</article>
+

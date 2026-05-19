@@ -21,21 +21,24 @@
 
     <div class="collapse navbar-collapse" id="eventlyNav">
       <ul class="navbar-nav mx-auto gap-lg-1">
-        @for (link of navLinks(); track link.label) {
+        @for (link of navLinks(); track link.route) {
           <li class="nav-item">
-            <a class="nav-link px-3" [class.active]="link.active" [href]="link.href">
+            <a
+              class="nav-link px-3"
+              [routerLink]="link.route"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: link.route === '/' }"
+            >
               {{ link.label }}
             </a>
           </li>
         }
       </ul>
-
       <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
         @if (currentUser(); as user) {
-          <span class="user-greeting smaller d-none d-md-inline">
-            Hi, <strong>{{ user.fullName }}</strong>
-          </span>
-          <button type="button" class="btn btn-ghost btn-sm px-4" (click)="logout()">Logout</button>
+          <a routerLink="/dashboard" class="btn btn-ghost btn-sm px-3">Dashboard</a>
+          <span class="user-greeting smaller d-none d-md-inline">Hi, <strong>{{ user.fullName }}</strong></span>
+          <button type="button" class="btn btn-ghost btn-sm px-3" (click)="requestLogout()">Logout</button>
         } @else {
           <a routerLink="/login" class="btn btn-ghost btn-sm px-4">Login</a>
           <a routerLink="/signup" class="btn btn-gradient btn-sm px-4">Sign Up</a>
@@ -44,3 +47,15 @@
     </div>
   </div>
 </nav>
+
+@if (showLogoutConfirm()) {
+  <app-confirm-modal
+    title="Log out?"
+    message="Are you sure you want to log out of your account?"
+    confirmLabel="Log out"
+    [danger]="true"
+    (confirmed)="confirmLogout()"
+    (cancelled)="cancelLogout()"
+  />
+}
+

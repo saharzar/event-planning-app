@@ -1,0 +1,38 @@
+<section class="page-header mb-4">
+  <p class="text-secondary mb-1">Your activity</p>
+  <h1 class="page-title fw-black mb-2">Joined Events</h1>
+  <p class="text-secondary mb-0">Events you've registered to attend.</p>
+</section>
+
+@if (loading()) {
+  <app-loading-state message="Loading joined events..." />
+} @else if (events().length === 0) {
+  <app-empty-state
+    icon="bi bi-calendar-heart"
+    title="You haven't joined any events yet"
+    description="Explore published events and reserve your spot."
+  />
+  <div class="text-center mt-3">
+    <a routerLink="/events" class="btn btn-gradient">Browse Events</a>
+  </div>
+} @else {
+  <div class="row g-4">
+    @for (event of events(); track event.id) {
+      <div class="col-md-6 col-xl-4">
+        <app-event-card-api [event]="event" [showLeave]="true" (leave)="requestLeave($event)" />
+      </div>
+    }
+  </div>
+}
+
+@if (leaveTargetId(); as id) {
+  <app-confirm-modal
+    title="Leave event?"
+    message="You will no longer be registered for this event."
+    confirmLabel="Leave event"
+    [danger]="true"
+    (confirmed)="confirmLeave()"
+    (cancelled)="cancelLeave()"
+  />
+}
+
