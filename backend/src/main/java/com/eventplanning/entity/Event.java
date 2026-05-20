@@ -37,6 +37,12 @@ public class Event {
     @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
+    @Column
+    private String organizerDisplayName;
+
+    @Column(columnDefinition = "TEXT")
+    private String extraImages;
+
     @ManyToOne
     @JoinColumn(name = "organizer_id", nullable = false)
     private User organizer;

@@ -78,6 +78,11 @@ export class EventsList implements OnInit {
     this.search$.next(value.trim());
   }
 
+  onSearch(): void {
+    this.page.set(0);
+    this.loadEvents();
+  }
+
   onCategoryChange(value: string): void {
     this.categoryFilter.set(value);
     this.page.set(0);

@@ -12,6 +12,8 @@ export interface Event {
   time: string;
   status: EventStatus;
   imageUrl?: string | null;
+  organizerDisplayName?: string | null;
+  extraImages?: string[];
   organizer: User;
 }
 
@@ -23,6 +25,8 @@ export interface EventRequest {
   date: string;
   time: string;
   imageUrl?: string | null;
+  organizerDisplayName?: string | null;
+  extraImages?: string[];
 }
 
 export interface Page<T> {

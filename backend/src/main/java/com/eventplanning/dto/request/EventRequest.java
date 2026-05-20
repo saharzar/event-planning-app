@@ -27,4 +27,8 @@ public class EventRequest {
     private LocalTime time;
 
     private String imageUrl;
+
+    private String organizerDisplayName;
+
+    private java.util.List<String> extraImages;
 }

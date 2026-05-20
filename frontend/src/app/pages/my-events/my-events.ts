@@ -42,6 +42,7 @@ export class MyEvents implements OnInit {
   readonly participantsEvent = signal<Event | null>(null);
   readonly actionLoadingId = signal<number | null>(null);
   readonly deleteTarget = signal<{ id: number; title: string } | null>(null);
+  readonly archiveTarget = signal<Event | null>(null);
   readonly attendeeCounts = signal<Record<number, number>>({});
 
   readonly deleteMessage = computed(() => {
@@ -88,8 +89,19 @@ export class MyEvents implements OnInit {
     this.runAction(id, () => this.eventService.pause(id), 'Event paused.');
   }
 
-  archive(id: number): void {
-    this.runAction(id, () => this.eventService.archive(id), 'Event archived.');
+  requestArchive(event: Event): void {
+    this.archiveTarget.set(event);
+  }
+
+  cancelArchive(): void {
+    this.archiveTarget.set(null);
+  }
+
+  confirmArchive(): void {
+    const target = this.archiveTarget();
+    if (!target) return;
+    this.archiveTarget.set(null);
+    this.runAction(target.id, () => this.eventService.archive(target.id), 'Event archived.');
   }
 
   requestDelete(id: number, title: string): void {

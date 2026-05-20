@@ -16,5 +16,7 @@ public class EventResponse {
     private LocalTime time;
     private EventStatus status;
     private String imageUrl;
+    private String organizerDisplayName;
+    private java.util.List<String> extraImages;
     private UserResponse organizer;
 }

@@ -144,6 +144,11 @@ export class EventDetail implements OnInit {
     });
   }
 
+  onGalleryError(evt: Event | any): void {
+    const el = (evt?.currentTarget || evt?.target) as HTMLElement;
+    if (el) el.style.display = 'none';
+  }
+
   leaveEvent(): void {
     const ev = this.event();
     if (!ev) return;

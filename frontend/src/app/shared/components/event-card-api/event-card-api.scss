@@ -2,7 +2,6 @@
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 1.25rem;
-  overflow: hidden;
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
 }
 
@@ -11,6 +10,7 @@
   position: relative;
   overflow: hidden;
   text-decoration: none;
+  border-radius: 1.25rem 1.25rem 0 0;
 }
 
 .event-card-api:hover .event-cover__img {

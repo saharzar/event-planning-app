@@ -33,6 +33,8 @@ public class EventService {
         event.setDate(request.getDate());
         event.setTime(request.getTime());
         event.setImageUrl(normalizeImageUrl(request.getImageUrl()));
+        event.setOrganizerDisplayName(trimToNull(request.getOrganizerDisplayName()));
+        event.setExtraImages(serializeExtraImages(request.getExtraImages()));
         event.setStatus(EventStatus.DRAFT);
         event.setOrganizer(organizer);
 
@@ -70,6 +72,10 @@ public class EventService {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
 
+        if (event.getStatus() == EventStatus.ARCHIVED) {
+            throw new UnauthorizedException("Archived events cannot be edited");
+        }
+
         event.setTitle(request.getTitle());
         event.setDescription(request.getDescription());
         event.setLocation(request.getLocation());
@@ -77,6 +83,8 @@ public class EventService {
         event.setDate(request.getDate());
         event.setTime(request.getTime());
         event.setImageUrl(normalizeImageUrl(request.getImageUrl()));
+        event.setOrganizerDisplayName(trimToNull(request.getOrganizerDisplayName()));
+        event.setExtraImages(serializeExtraImages(request.getExtraImages()));
 
         return mapToResponse(eventRepository.save(event));
     }
@@ -136,6 +144,8 @@ public class EventService {
         response.setTime(event.getTime());
         response.setStatus(event.getStatus());
         response.setImageUrl(event.getImageUrl());
+        response.setOrganizerDisplayName(event.getOrganizerDisplayName());
+        response.setExtraImages(deserializeExtraImages(event.getExtraImages()));
         response.setOrganizer(userService.mapToResponse(event.getOrganizer()));
         return response;
     }
@@ -146,5 +156,24 @@ public class EventService {
         }
         String trimmed = imageUrl.trim();
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String trimToNull(String value) {
+        if (value == null) return null;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String serializeExtraImages(java.util.List<String> images) {
+        if (images == null || images.isEmpty()) return null;
+        return String.join(",,", images.stream().map(s -> s == null ? "" : s).toList());
+    }
+
+    private java.util.List<String> deserializeExtraImages(String raw) {
+        if (raw == null || raw.isBlank()) return java.util.Collections.emptyList();
+        return java.util.Arrays.stream(raw.split(",,"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(java.util.stream.Collectors.toList());
     }
 }

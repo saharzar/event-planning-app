@@ -21,7 +21,7 @@
     <ul class="event-card-meta list-unstyled smaller text-secondary mb-3">
       <li><i class="bi bi-calendar3 me-2"></i>{{ event().date | date: 'mediumDate' }}</li>
       <li><i class="bi bi-geo-alt me-2"></i>{{ event().location }}</li>
-      <li><i class="bi bi-person me-2"></i>{{ event().organizer.fullName }}</li>
+      <li><i class="bi bi-person me-2"></i>{{ event().organizerDisplayName || event().organizer.fullName }}</li>
       @if (attendeeCount() !== null) {
         <li><i class="bi bi-people me-2"></i>{{ attendeeCount() }} attending</li>
       }
