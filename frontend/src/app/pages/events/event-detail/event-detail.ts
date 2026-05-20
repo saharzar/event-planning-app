@@ -14,6 +14,7 @@ import { LoadingState } from '../../../shared/components/loading-state/loading-s
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { CountdownBadge } from '../../../shared/components/countdown-badge/countdown-badge';
 import { EventCover } from '../../../shared/components/event-cover/event-cover';
+import { isActiveJoinedEventStatus } from '../../../core/utils/joined-events.util';
 
 @Component({
   selector: 'app-event-detail',
@@ -56,6 +57,16 @@ export class EventDetail implements OnInit {
       !this.isOwner() &&
       !this.hasJoined()
     );
+  });
+
+  readonly canLeave = computed(() => {
+    const ev = this.event();
+    return this.hasJoined() && !!ev && isActiveJoinedEventStatus(ev.status);
+  });
+
+  readonly isInactiveParticipation = computed(() => {
+    const ev = this.event();
+    return this.hasJoined() && !!ev && !isActiveJoinedEventStatus(ev.status);
   });
 
   ngOnInit(): void {

@@ -7,7 +7,7 @@
         <i class="bi bi-arrow-left"></i> Back to events
       </a>
 
-      <div class="event-banner-wrap mb-4">
+      <div class="event-banner-wrap mb-3">
         <app-event-cover [src]="ev.imageUrl" [alt]="ev.title" variant="banner" />
         <div class="event-banner-overlay">
           <app-countdown-badge [date]="ev.date" [time]="ev.time" />
@@ -106,7 +106,7 @@
                 <a [routerLink]="['/events', ev.id, 'edit']" class="btn btn-gradient">Edit event</a>
                 <a routerLink="/my-events" class="btn btn-outline-soft">Manage in My Events</a>
               </div>
-            } @else if (hasJoined()) {
+            } @else if (canLeave()) {
               <div class="joined-state text-center py-3 mb-3">
                 <i class="bi bi-check-circle-fill text-success display-6"></i>
                 <p class="fw-bold mb-0 mt-2">You're going!</p>
@@ -124,6 +124,14 @@
                   Leave Event
                 }
               </button>
+            } @else if (isInactiveParticipation()) {
+              <div class="joined-state text-center py-3 mb-0">
+                <i class="bi bi-archive text-secondary display-6"></i>
+                <p class="fw-bold mb-1 mt-2">Previously joined</p>
+                <p class="smaller text-secondary mb-0">
+                  This event is paused or archived and is no longer active.
+                </p>
+              </div>
             } @else if (canJoin()) {
               <p class="smaller text-secondary mb-3">Reserve your spot for this published event.</p>
               <button

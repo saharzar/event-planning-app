@@ -3,6 +3,7 @@ package com.eventplanning.service;
 import com.eventplanning.dto.response.AttendanceResponse;
 import com.eventplanning.entity.Attendance;
 import com.eventplanning.entity.Event;
+import com.eventplanning.entity.EventStatus;
 import com.eventplanning.entity.User;
 import com.eventplanning.exception.AlreadyJoinedException;
 import com.eventplanning.exception.ResourceNotFoundException;
@@ -66,6 +67,7 @@ public class AttendanceService {
     public List<AttendanceResponse> getMyJoinedEvents(User currentUser) {
         return attendanceRepository.findByUserId(currentUser.getId())
                 .stream()
+                .filter(a -> isActiveJoinedEvent(a.getEvent()))
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
@@ -86,8 +88,19 @@ public class AttendanceService {
         Attendance attendance = attendanceRepository
                 .findByUserIdAndEventId(currentUser.getId(), eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("You have not joined this event"));
+
+        Event event = attendance.getEvent();
+        if (!isActiveJoinedEvent(event)) {
+            throw new UnauthorizedException("You cannot leave an archived or paused event");
+        }
+
         attendanceRepository.delete(attendance);
         attendanceRepository.flush();
+    }
+
+    private boolean isActiveJoinedEvent(Event event) {
+        EventStatus status = event.getStatus();
+        return status != EventStatus.ARCHIVED && status != EventStatus.PAUSED;
     }
 
     private AttendanceResponse mapToResponse(Attendance attendance) {

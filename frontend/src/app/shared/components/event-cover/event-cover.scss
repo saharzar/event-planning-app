@@ -15,8 +15,8 @@
 }
 
 :host.event-cover-host--banner .event-cover {
-  height: clamp(220px, 40vw, 380px);
-  border-radius: 1.5rem;
+  height: clamp(140px, 28vw, 220px);
+  border-radius: 1rem;
 }
 
 .event-cover__img {

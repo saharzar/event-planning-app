@@ -61,19 +61,19 @@
         </select>
       </div>
 
-      <div class="col-12">
-        <label class="form-label">Event cover image</label>
-        <p class="smaller text-secondary mb-2">Optional. Upload a photo or leave blank for a default placeholder.</p>
+      <div class="col-12 event-image-upload">
+        <label class="form-label mb-1">Event cover image</label>
+        <p class="upload-hint text-secondary mb-2">Optional — JPG or PNG, max 800 KB.</p>
         <input
           type="file"
-          class="form-control mb-2"
+          class="form-control form-control-sm upload-input"
           accept="image/*"
           (change)="onImageFileChange($event)"
         />
         @if (imagePreview()) {
-          <div class="image-preview-wrap mb-2">
+          <div class="image-preview-wrap mt-2">
             <app-event-cover class="form-cover-preview" [src]="imagePreview()" alt="Event cover preview" />
-            <button type="button" class="btn btn-sm btn-outline-soft mt-2" (click)="clearImage()">Remove image</button>
+            <button type="button" class="btn btn-sm btn-outline-soft mt-2" (click)="clearImage()">Remove</button>
           </div>
         }
       </div>

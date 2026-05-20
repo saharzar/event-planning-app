@@ -46,7 +46,26 @@
   color: #334155;
 }
 
+.event-image-upload {
+  .upload-hint {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .upload-input {
+    max-width: 360px;
+    padding: 0.3rem 0.65rem;
+    font-size: 0.85rem;
+  }
+}
+
+.form-cover-preview {
+  display: block;
+  max-width: 240px;
+}
+
 .form-cover-preview .event-cover {
-  height: 200px;
-  border-radius: 12px;
+  height: 110px;
+  border-radius: 10px;
 }

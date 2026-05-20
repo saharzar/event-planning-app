@@ -16,9 +16,10 @@
 
 .event-banner-wrap {
   position: relative;
-  border-radius: 1.5rem;
+  border-radius: 1rem;
   overflow: hidden;
-  box-shadow: 0 20px 48px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 12px 32px rgba(124, 58, 237, 0.1);
+  margin-bottom: 0 !important;
 }
 
 .event-banner-overlay {

@@ -7,6 +7,7 @@ import { AttendanceService } from '../../core/services/attendance.service';
 import { Event, EventStatus } from '../../core/models/event-api.model';
 import { Attendance } from '../../core/models/attendance.model';
 import { isEventEnded } from '../../core/utils/event-countdown.util';
+import { isActiveJoinedEventStatus } from '../../core/utils/joined-events.util';
 import { LoadingState } from '../../shared/components/loading-state/loading-state';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
@@ -40,7 +41,9 @@ export class Dashboard implements OnInit {
 
   readonly stats = computed(() => {
     const created = this.myEvents();
-    const joined = this.joinedAttendances();
+    const joined = this.joinedAttendances().filter((a) =>
+      isActiveJoinedEventStatus(a.event.status)
+    );
     const countBy = (status: EventStatus) => created.filter((e) => e.status === status).length;
     const upcomingJoined = joined.filter((a) => !isEventEnded(a.event.date, a.event.time)).length;
     const upcomingCreated = created.filter(
@@ -64,6 +67,7 @@ export class Dashboard implements OnInit {
 
   readonly recentJoined = computed(() =>
     [...this.joinedAttendances()]
+      .filter((a) => isActiveJoinedEventStatus(a.event.status))
       .sort((a, b) => (a.event.date < b.event.date ? 1 : -1))
       .slice(0, 4)
   );
@@ -76,7 +80,9 @@ export class Dashboard implements OnInit {
     }).subscribe({
       next: ({ mine, joined, browse }) => {
         this.myEvents.set(mine);
-        this.joinedAttendances.set(joined);
+        this.joinedAttendances.set(
+          joined.filter((a) => isActiveJoinedEventStatus(a.event.status))
+        );
         this.publishedBrowse.set(browse.content);
         this.loading.set(false);
       },

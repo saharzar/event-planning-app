@@ -10,6 +10,7 @@ import { LoadingState } from '../../shared/components/loading-state/loading-stat
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { EventCardApi } from '../../shared/components/event-card-api/event-card-api';
 import { ConfirmModal } from '../../shared/components/confirm-modal/confirm-modal';
+import { isActiveJoinedEventStatus } from '../../core/utils/joined-events.util';
 
 @Component({
   selector: 'app-joined-events',
@@ -36,8 +37,9 @@ export class JoinedEvents implements OnInit {
     this.loading.set(true);
     this.attendanceService.getMyJoined().subscribe({
       next: (list) => {
-        this.attendances.set(list);
-        this.events.set(list.map((a) => a.event));
+        const active = list.filter((a) => isActiveJoinedEventStatus(a.event.status));
+        this.attendances.set(active);
+        this.events.set(active.map((a) => a.event));
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
