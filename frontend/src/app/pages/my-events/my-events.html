@@ -66,11 +66,14 @@
                 <button type="button" class="btn btn-outline-soft" (click)="openParticipants(event)">
                   Participants
                 </button>
-                @if (event.status === 'DRAFT' || event.status === 'PAUSED') {
+                @if (event.status === 'DRAFT' || event.status === 'SUSPENDED') {
                   <button type="button" class="btn btn-outline-soft text-success" (click)="publish(event.id)">Publish</button>
                 }
                 @if (event.status === 'PUBLISHED') {
-                  <button type="button" class="btn btn-outline-soft text-warning" (click)="pause(event.id)">Pause</button>
+                  <button type="button" class="btn btn-outline-soft text-warning" (click)="toggleSuspend(event.id)">Suspend</button>
+                }
+                @if (event.status === 'SUSPENDED') {
+                  <button type="button" class="btn btn-outline-soft text-info" (click)="toggleSuspend(event.id)">Resume</button>
                 }
                 @if (event.status !== 'ARCHIVED') {
                   <button type="button" class="btn btn-outline-soft" (click)="requestArchive(event)">Archive</button>

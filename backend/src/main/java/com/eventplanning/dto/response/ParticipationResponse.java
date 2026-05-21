@@ -4,7 +4,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class AttendanceResponse {
+public class ParticipationResponse {
     private Long id;
     private UserResponse user;
     private EventResponse event;

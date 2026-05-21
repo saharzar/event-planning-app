@@ -49,8 +49,8 @@ export class EventService {
     return this.http.patch<Event>(`${this.baseUrl}/${id}/publish`, null);
   }
 
-  pause(id: number): Observable<Event> {
-    return this.http.patch<Event>(`${this.baseUrl}/${id}/pause`, null);
+  toggleSuspend(id: number): Observable<Event> {
+    return this.http.patch<Event>(`${this.baseUrl}/${id}/toggle-suspend`, null);
   }
 
   archive(id: number): Observable<Event> {

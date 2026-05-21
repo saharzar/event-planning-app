@@ -1,6 +1,6 @@
 import { User } from './user.model';
 
-export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED';
+export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'SUSPENDED' | 'ARCHIVED';
 
 export interface Event {
   id: number;
@@ -51,4 +51,4 @@ export const EVENT_CATEGORIES = [
   'Other',
 ] as const;
 
-export const EVENT_STATUSES: EventStatus[] = ['DRAFT', 'PUBLISHED', 'PAUSED', 'ARCHIVED'];
+export const EVENT_STATUSES: EventStatus[] = ['DRAFT', 'PUBLISHED', 'SUSPENDED', 'ARCHIVED'];

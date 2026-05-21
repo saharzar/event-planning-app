@@ -90,13 +90,13 @@ public class EventController {
         return ResponseEntity.ok(eventService.publishEvent(id, currentUser));
     }
 
-    // Pause event
-    @PatchMapping("/{id}/pause")
-    public ResponseEntity<EventResponse> pauseEvent(
+    // Toggle suspend / resume event
+    @PatchMapping("/{id}/toggle-suspend")
+    public ResponseEntity<EventResponse> toggleSuspendEvent(
             @PathVariable Long id,
             HttpSession session) {
         User currentUser = userService.getSessionUser(session);
-        return ResponseEntity.ok(eventService.pauseEvent(id, currentUser));
+        return ResponseEntity.ok(eventService.toggleSuspendEvent(id, currentUser));
     }
 
     // Archive event

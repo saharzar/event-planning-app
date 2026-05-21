@@ -3,7 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 import { EventService } from '../../../core/services/event.service';
-import { AttendanceService } from '../../../core/services/attendance.service';
+import { ParticipationService } from '../../../core/services/participation.service';
 import { Event } from '../../../core/models/event-api.model';
 import { EVENT_CATEGORIES } from '../../../core/models/event-api.model';
 import { isEventEnded } from '../../../core/utils/event-countdown.util';
@@ -24,7 +24,7 @@ type TimeFilter = 'all' | 'upcoming' | 'past';
 })
 export class EventsList implements OnInit {
   private readonly eventService = inject(EventService);
-  private readonly attendanceService = inject(AttendanceService);
+  private readonly participationService = inject(ParticipationService);
   private readonly route = inject(ActivatedRoute);
   private readonly search$ = new Subject<string>();
 
@@ -78,11 +78,6 @@ export class EventsList implements OnInit {
     this.search$.next(value.trim());
   }
 
-  onSearch(): void {
-    this.page.set(0);
-    this.loadEvents();
-  }
-
   onCategoryChange(value: string): void {
     this.categoryFilter.set(value);
     this.page.set(0);
@@ -114,7 +109,7 @@ export class EventsList implements OnInit {
 
   private loadAttendeeCounts(events: Event[]): void {
     if (events.length === 0) return;
-    const requests = events.map((e) => this.attendanceService.getAttendeeCount(e.id));
+    const requests = events.map((e) => this.participationService.getAttendeeCount(e.id));
     forkJoin(requests).subscribe({
       next: (counts) => {
         const map: Record<number, number> = {};

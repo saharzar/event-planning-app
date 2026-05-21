@@ -53,8 +53,8 @@
               @if (form.controls.email.touched && form.controls.email.hasError('required')) {
                 <div class="invalid-feedback d-block">Email is required.</div>
               }
-              @if (form.controls.email.touched && form.controls.email.hasError('email')) {
-                <div class="invalid-feedback d-block">Please enter a valid email.</div>
+              @if (form.controls.email.touched && (form.controls.email.hasError('pattern') || form.controls.email.hasError('email'))) {
+                <div class="invalid-feedback d-block">Please enter a valid email address (e.g. name@example.com).</div>
               }
             </div>
 

@@ -12,7 +12,7 @@ import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { ParticipantsModal } from '../../shared/components/participants-modal/participants-modal';
 import { ConfirmModal } from '../../shared/components/confirm-modal/confirm-modal';
 import { CountdownBadge } from '../../shared/components/countdown-badge/countdown-badge';
-import { AttendanceService } from '../../core/services/attendance.service';
+import { ParticipationService } from '../../core/services/participation.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -33,7 +33,7 @@ import { forkJoin } from 'rxjs';
 })
 export class MyEvents implements OnInit {
   private readonly eventService = inject(EventService);
-  private readonly attendanceService = inject(AttendanceService);
+  private readonly participationService = inject(ParticipationService);
   private readonly notifications = inject(NotificationService);
 
   readonly loading = signal(true);
@@ -56,7 +56,7 @@ export class MyEvents implements OnInit {
     return filter ? list.filter((e) => e.status === filter) : list;
   });
 
-  readonly statuses: (EventStatus | '')[] = ['', 'DRAFT', 'PUBLISHED', 'PAUSED', 'ARCHIVED'];
+  readonly statuses: (EventStatus | '')[] = ['', 'DRAFT', 'PUBLISHED', 'SUSPENDED', 'ARCHIVED'];
 
   ngOnInit(): void {
     this.loadEvents();
@@ -85,8 +85,8 @@ export class MyEvents implements OnInit {
     this.runAction(id, () => this.eventService.publish(id), 'Event published.');
   }
 
-  pause(id: number): void {
-    this.runAction(id, () => this.eventService.pause(id), 'Event paused.');
+  toggleSuspend(id: number): void {
+    this.runAction(id, () => this.eventService.toggleSuspend(id), 'Event status toggled.');
   }
 
   requestArchive(event: Event): void {
@@ -138,7 +138,7 @@ export class MyEvents implements OnInit {
 
   private loadAttendeeCounts(events: Event[]): void {
     if (events.length === 0) return;
-    forkJoin(events.map((e) => this.attendanceService.getAttendeeCount(e.id))).subscribe({
+    forkJoin(events.map((e) => this.participationService.getAttendeeCount(e.id))).subscribe({
       next: (counts) => {
         const map: Record<number, number> = {};
         events.forEach((e, i) => (map[e.id] = counts[i]));

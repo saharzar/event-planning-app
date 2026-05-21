@@ -7,6 +7,7 @@ import com.eventplanning.entity.EventStatus;
 import com.eventplanning.entity.User;
 import com.eventplanning.exception.ResourceNotFoundException;
 import com.eventplanning.exception.UnauthorizedException;
+import com.eventplanning.exception.UnauthorizedOperationException;
 import com.eventplanning.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -71,10 +72,7 @@ public class EventService {
     public EventResponse updateEvent(Long id, EventRequest request, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
-
-        if (event.getStatus() == EventStatus.ARCHIVED) {
-            throw new UnauthorizedException("Archived events cannot be edited");
-        }
+        checkNotArchived(event);
 
         event.setTitle(request.getTitle());
         event.setDescription(request.getDescription());
@@ -96,26 +94,49 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    // Publish event
+    // Publish event: DRAFT -> PUBLISHED
     public EventResponse publishEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
+        checkNotArchived(event);
+
+        if (event.getStatus() != EventStatus.DRAFT) {
+            throw new UnauthorizedOperationException(
+                "Only draft events can be published. Current status: " + event.getStatus());
+        }
+
         event.setStatus(EventStatus.PUBLISHED);
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Pause event
-    public EventResponse pauseEvent(Long id, User currentUser) {
+    // Toggle suspend/resume: PUBLISHED <-> SUSPENDED
+    public EventResponse toggleSuspendEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
-        event.setStatus(EventStatus.PAUSED);
+        checkNotArchived(event);
+
+        if (event.getStatus() == EventStatus.PUBLISHED) {
+            event.setStatus(EventStatus.SUSPENDED);
+        } else if (event.getStatus() == EventStatus.SUSPENDED) {
+            event.setStatus(EventStatus.PUBLISHED);
+        } else {
+            throw new UnauthorizedOperationException(
+                "Only published or suspended events can be toggled. Current status: " + event.getStatus());
+        }
+
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Archive event
+    // Archive event: DRAFT / PUBLISHED / SUSPENDED -> ARCHIVED
     public EventResponse archiveEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
+        checkNotArchived(event);
+
+        if (event.getStatus() == EventStatus.ARCHIVED) {
+            throw new UnauthorizedOperationException("Event is already archived.");
+        }
+
         event.setStatus(EventStatus.ARCHIVED);
         return mapToResponse(eventRepository.save(event));
     }
@@ -130,6 +151,13 @@ public class EventService {
     private void checkOwnership(Event event, User currentUser) {
         if (!event.getOrganizer().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You are not the owner of this event");
+        }
+    }
+
+    private void checkNotArchived(Event event) {
+        if (event.getStatus() == EventStatus.ARCHIVED) {
+            throw new UnauthorizedOperationException(
+                "Archived events cannot be modified or published.");
         }
     }
 

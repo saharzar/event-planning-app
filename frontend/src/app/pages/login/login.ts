@@ -24,7 +24,7 @@ export class Login {
   readonly showPassword = signal(false);
 
   readonly form = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/)]],
     password: ['', [Validators.required]],
   });
 
