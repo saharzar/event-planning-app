@@ -1,10 +1,10 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AttendanceService } from '../../core/services/attendance.service';
+import { ParticipationService } from '../../core/services/participation.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { Event } from '../../core/models/event-api.model';
-import { Attendance } from '../../core/models/attendance.model';
+import { Participation } from '../../core/models/participation.model';
 import { getApiErrorMessage } from '../../core/utils/http-error.util';
 import { LoadingState } from '../../shared/components/loading-state/loading-state';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
@@ -19,11 +19,11 @@ import { ConfirmModal } from '../../shared/components/confirm-modal/confirm-moda
   styleUrl: './joined-events.scss',
 })
 export class JoinedEvents implements OnInit {
-  private readonly attendanceService = inject(AttendanceService);
+  private readonly participationService = inject(ParticipationService);
   private readonly notifications = inject(NotificationService);
 
   readonly loading = signal(true);
-  readonly attendances = signal<Attendance[]>([]);
+  readonly participations = signal<Participation[]>([]);
   readonly leaveTargetId = signal<number | null>(null);
 
   readonly events = signal<Event[]>([]);
@@ -34,9 +34,9 @@ export class JoinedEvents implements OnInit {
 
   load(): void {
     this.loading.set(true);
-    this.attendanceService.getMyJoined().subscribe({
+    this.participationService.getMyUpcomingJoined().subscribe({
       next: (list) => {
-        this.attendances.set(list);
+        this.participations.set(list);
         this.events.set(list.map((a) => a.event));
         this.loading.set(false);
       },
@@ -59,7 +59,7 @@ export class JoinedEvents implements OnInit {
     const id = this.leaveTargetId();
     if (id === null) return;
 
-    this.attendanceService.leave(id).subscribe({
+    this.participationService.leave(id).subscribe({
       next: () => {
         this.leaveTargetId.set(null);
         this.notifications.success('You have left the event.');

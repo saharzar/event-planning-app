@@ -1,7 +1,7 @@
-import { Event } from './event-api.model';
 import { User } from './user.model';
+import { Event } from './event-api.model';
 
-export interface Attendance {
+export interface Participation {
   id: number;
   user: User;
   event: Event;

@@ -7,6 +7,7 @@ import com.eventplanning.entity.EventStatus;
 import com.eventplanning.entity.User;
 import com.eventplanning.exception.ResourceNotFoundException;
 import com.eventplanning.exception.UnauthorizedException;
+import com.eventplanning.exception.UnauthorizedOperationException;
 import com.eventplanning.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,8 @@ public class EventService {
         event.setDate(request.getDate());
         event.setTime(request.getTime());
         event.setImageUrl(normalizeImageUrl(request.getImageUrl()));
+        event.setOrganizerDisplayName(trimToNull(request.getOrganizerDisplayName()));
+        event.setExtraImages(serializeExtraImages(request.getExtraImages()));
         event.setStatus(EventStatus.DRAFT);
         event.setOrganizer(organizer);
 
@@ -69,6 +72,7 @@ public class EventService {
     public EventResponse updateEvent(Long id, EventRequest request, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
+        checkNotArchived(event);
 
         event.setTitle(request.getTitle());
         event.setDescription(request.getDescription());
@@ -77,6 +81,8 @@ public class EventService {
         event.setDate(request.getDate());
         event.setTime(request.getTime());
         event.setImageUrl(normalizeImageUrl(request.getImageUrl()));
+        event.setOrganizerDisplayName(trimToNull(request.getOrganizerDisplayName()));
+        event.setExtraImages(serializeExtraImages(request.getExtraImages()));
 
         return mapToResponse(eventRepository.save(event));
     }
@@ -88,26 +94,49 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    // Publish event
+    // Publish event: DRAFT -> PUBLISHED
     public EventResponse publishEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
+        checkNotArchived(event);
+
+        if (event.getStatus() != EventStatus.DRAFT) {
+            throw new UnauthorizedOperationException(
+                "Only draft events can be published. Current status: " + event.getStatus());
+        }
+
         event.setStatus(EventStatus.PUBLISHED);
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Pause event
-    public EventResponse pauseEvent(Long id, User currentUser) {
+    // Toggle suspend/resume: PUBLISHED <-> SUSPENDED
+    public EventResponse toggleSuspendEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
-        event.setStatus(EventStatus.PAUSED);
+        checkNotArchived(event);
+
+        if (event.getStatus() == EventStatus.PUBLISHED) {
+            event.setStatus(EventStatus.SUSPENDED);
+        } else if (event.getStatus() == EventStatus.SUSPENDED) {
+            event.setStatus(EventStatus.PUBLISHED);
+        } else {
+            throw new UnauthorizedOperationException(
+                "Only published or suspended events can be toggled. Current status: " + event.getStatus());
+        }
+
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Archive event
+    // Archive event: DRAFT / PUBLISHED / SUSPENDED -> ARCHIVED
     public EventResponse archiveEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
+        checkNotArchived(event);
+
+        if (event.getStatus() == EventStatus.ARCHIVED) {
+            throw new UnauthorizedOperationException("Event is already archived.");
+        }
+
         event.setStatus(EventStatus.ARCHIVED);
         return mapToResponse(eventRepository.save(event));
     }
@@ -125,6 +154,13 @@ public class EventService {
         }
     }
 
+    private void checkNotArchived(Event event) {
+        if (event.getStatus() == EventStatus.ARCHIVED) {
+            throw new UnauthorizedOperationException(
+                "Archived events cannot be modified or published.");
+        }
+    }
+
     public EventResponse mapToResponse(Event event) {
         EventResponse response = new EventResponse();
         response.setId(event.getId());
@@ -136,6 +172,8 @@ public class EventService {
         response.setTime(event.getTime());
         response.setStatus(event.getStatus());
         response.setImageUrl(event.getImageUrl());
+        response.setOrganizerDisplayName(event.getOrganizerDisplayName());
+        response.setExtraImages(deserializeExtraImages(event.getExtraImages()));
         response.setOrganizer(userService.mapToResponse(event.getOrganizer()));
         return response;
     }
@@ -146,5 +184,24 @@ public class EventService {
         }
         String trimmed = imageUrl.trim();
         return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String trimToNull(String value) {
+        if (value == null) return null;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private String serializeExtraImages(java.util.List<String> images) {
+        if (images == null || images.isEmpty()) return null;
+        return String.join(",,", images.stream().map(s -> s == null ? "" : s).toList());
+    }
+
+    private java.util.List<String> deserializeExtraImages(String raw) {
+        if (raw == null || raw.isBlank()) return java.util.Collections.emptyList();
+        return java.util.Arrays.stream(raw.split(",,"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(java.util.stream.Collectors.toList());
     }
 }

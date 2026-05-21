@@ -61,21 +61,32 @@
         </select>
       </div>
 
-      <div class="col-12">
-        <label class="form-label">Event cover image</label>
-        <p class="smaller text-secondary mb-2">Optional. Upload a photo or leave blank for a default placeholder.</p>
+      <div class="col-12 event-image-upload">
+        <label class="form-label mb-1">Event cover image</label>
+        <p class="upload-hint text-secondary mb-2">Optional — JPG or PNG, max 800 KB.</p>
         <input
           type="file"
-          class="form-control mb-2"
+          class="form-control form-control-sm upload-input"
           accept="image/*"
           (change)="onImageFileChange($event)"
         />
         @if (imagePreview()) {
-          <div class="image-preview-wrap mb-2">
+          <div class="image-preview-wrap mt-2">
             <app-event-cover class="form-cover-preview" [src]="imagePreview()" alt="Event cover preview" />
-            <button type="button" class="btn btn-sm btn-outline-soft mt-2" (click)="clearImage()">Remove image</button>
+            <button type="button" class="btn btn-sm btn-outline-soft mt-2" (click)="clearImage()">Remove</button>
           </div>
         }
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="organizerDisplayName">Organizer display name</label>
+        <input
+          id="organizerDisplayName"
+          type="text"
+          class="form-control"
+          formControlName="organizerDisplayName"
+          placeholder="e.g. TechNova (optional — uses your name if empty)"
+        />
       </div>
 
       <div class="col-12">
@@ -87,6 +98,30 @@
           formControlName="description"
           placeholder="Tell attendees what to expect..."
         ></textarea>
+      </div>
+
+      <div class="col-12 event-image-upload">
+        <label class="form-label mb-1">Extra event photos</label>
+        <p class="upload-hint text-secondary mb-2">Optional — add up to 4 extra photos for the event gallery.</p>
+        <input
+          type="file"
+          class="form-control form-control-sm upload-input"
+          accept="image/*"
+          multiple
+          (change)="onExtraImagesChange($event)"
+        />
+        @if (extraImagePreviews().length > 0) {
+          <div class="extra-images-grid mt-2">
+            @for (preview of extraImagePreviews(); track $index) {
+              <div class="extra-image-item">
+                <img [src]="preview" alt="Extra photo" class="extra-image-thumb" />
+                <button type="button" class="btn btn-sm btn-outline-soft extra-image-remove" (click)="removeExtraImage($index)">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
 

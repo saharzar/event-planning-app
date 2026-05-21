@@ -1,7 +1,7 @@
 import { Component, inject, input, output, signal, effect } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { AttendanceService } from '../../../core/services/attendance.service';
-import { Attendance } from '../../../core/models/attendance.model';
+import { ParticipationService } from '../../../core/services/participation.service';
+import { Participation } from '../../../core/models/participation.model';
 import { NotificationService } from '../../../core/services/notification.service';
 import { getApiErrorMessage } from '../../../core/utils/http-error.util';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,7 +16,7 @@ import { EmptyState } from '../empty-state/empty-state';
   styleUrl: './participants-modal.scss',
 })
 export class ParticipantsModal {
-  private readonly attendanceService = inject(AttendanceService);
+  private readonly participationService = inject(ParticipationService);
   private readonly notifications = inject(NotificationService);
 
   readonly eventId = input.required<number>();
@@ -24,7 +24,7 @@ export class ParticipantsModal {
   readonly closed = output<void>();
 
   readonly loading = signal(false);
-  readonly participants = signal<Attendance[]>([]);
+  readonly participants = signal<Participation[]>([]);
 
   constructor() {
     effect(() => {
@@ -37,7 +37,7 @@ export class ParticipantsModal {
 
   loadParticipants(eventId: number): void {
     this.loading.set(true);
-    this.attendanceService.getParticipants(eventId).subscribe({
+    this.participationService.getParticipants(eventId).subscribe({
       next: (list) => {
         this.participants.set(list);
         this.loading.set(false);

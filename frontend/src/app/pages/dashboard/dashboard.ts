@@ -3,10 +3,11 @@ import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { EventService } from '../../core/services/event.service';
-import { AttendanceService } from '../../core/services/attendance.service';
+import { ParticipationService } from '../../core/services/participation.service';
 import { Event, EventStatus } from '../../core/models/event-api.model';
-import { Attendance } from '../../core/models/attendance.model';
+import { Participation } from '../../core/models/participation.model';
 import { isEventEnded } from '../../core/utils/event-countdown.util';
+import { isActiveJoinedEventStatus } from '../../core/utils/joined-events.util';
 import { LoadingState } from '../../shared/components/loading-state/loading-state';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
@@ -30,19 +31,19 @@ import { DatePipe } from '@angular/common';
 export class Dashboard implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly eventService = inject(EventService);
-  private readonly attendanceService = inject(AttendanceService);
+  private readonly participationService = inject(ParticipationService);
 
   readonly currentUser = this.auth.currentUser;
   readonly loading = signal(true);
   readonly myEvents = signal<Event[]>([]);
-  readonly joinedAttendances = signal<Attendance[]>([]);
+  readonly joinedParticipations = signal<Participation[]>([]);
   readonly publishedBrowse = signal<Event[]>([]);
 
   readonly stats = computed(() => {
     const created = this.myEvents();
-    const joined = this.joinedAttendances();
+    const joined = this.joinedParticipations();
     const countBy = (status: EventStatus) => created.filter((e) => e.status === status).length;
-    const upcomingJoined = joined.filter((a) => !isEventEnded(a.event.date, a.event.time)).length;
+    const upcomingJoined = joined.length;
     const upcomingCreated = created.filter(
       (e) => e.status === 'PUBLISHED' && !isEventEnded(e.date, e.time)
     ).length;
@@ -63,7 +64,7 @@ export class Dashboard implements OnInit {
   );
 
   readonly recentJoined = computed(() =>
-    [...this.joinedAttendances()]
+    [...this.joinedParticipations()]
       .sort((a, b) => (a.event.date < b.event.date ? 1 : -1))
       .slice(0, 4)
   );
@@ -71,12 +72,12 @@ export class Dashboard implements OnInit {
   ngOnInit(): void {
     forkJoin({
       mine: this.eventService.getMyEvents(),
-      joined: this.attendanceService.getMyJoined(),
+      joined: this.participationService.getMyUpcomingJoined(),
       browse: this.eventService.getPublished({ page: 0, size: 4, sort: 'date,desc' }),
     }).subscribe({
       next: ({ mine, joined, browse }) => {
         this.myEvents.set(mine);
-        this.joinedAttendances.set(joined);
+        this.joinedParticipations.set(joined);
         this.publishedBrowse.set(browse.content);
         this.loading.set(false);
       },

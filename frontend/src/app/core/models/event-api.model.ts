@@ -1,6 +1,6 @@
 import { User } from './user.model';
 
-export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'PAUSED' | 'ARCHIVED';
+export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'SUSPENDED' | 'ARCHIVED';
 
 export interface Event {
   id: number;
@@ -12,6 +12,8 @@ export interface Event {
   time: string;
   status: EventStatus;
   imageUrl?: string | null;
+  organizerDisplayName?: string | null;
+  extraImages?: string[];
   organizer: User;
 }
 
@@ -23,6 +25,8 @@ export interface EventRequest {
   date: string;
   time: string;
   imageUrl?: string | null;
+  organizerDisplayName?: string | null;
+  extraImages?: string[];
 }
 
 export interface Page<T> {
@@ -47,4 +51,4 @@ export const EVENT_CATEGORIES = [
   'Other',
 ] as const;
 
-export const EVENT_STATUSES: EventStatus[] = ['DRAFT', 'PUBLISHED', 'PAUSED', 'ARCHIVED'];
+export const EVENT_STATUSES: EventStatus[] = ['DRAFT', 'PUBLISHED', 'SUSPENDED', 'ARCHIVED'];

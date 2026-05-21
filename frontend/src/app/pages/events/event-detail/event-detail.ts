@@ -4,16 +4,17 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin, of } from 'rxjs';
 import { EventService } from '../../../core/services/event.service';
-import { AttendanceService } from '../../../core/services/attendance.service';
+import { ParticipationService } from '../../../core/services/participation.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Event } from '../../../core/models/event-api.model';
-import { Attendance } from '../../../core/models/attendance.model';
+import { Participation } from '../../../core/models/participation.model';
 import { getApiErrorMessage } from '../../../core/utils/http-error.util';
 import { LoadingState } from '../../../shared/components/loading-state/loading-state';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { CountdownBadge } from '../../../shared/components/countdown-badge/countdown-badge';
 import { EventCover } from '../../../shared/components/event-cover/event-cover';
+import { isActiveJoinedEventStatus } from '../../../core/utils/joined-events.util';
 
 @Component({
   selector: 'app-event-detail',
@@ -26,7 +27,7 @@ export class EventDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly eventService = inject(EventService);
-  private readonly attendanceService = inject(AttendanceService);
+  private readonly participationService = inject(ParticipationService);
   private readonly auth = inject(AuthService);
   private readonly notifications = inject(NotificationService);
 
@@ -36,7 +37,7 @@ export class EventDetail implements OnInit {
   readonly event = signal<Event | null>(null);
   readonly participantCount = signal(0);
   readonly hasJoined = signal(false);
-  readonly participants = signal<Attendance[]>([]);
+  readonly participants = signal<Participation[]>([]);
   readonly showAttendeesList = signal(false);
 
   readonly currentUser = this.auth.currentUser;
@@ -58,6 +59,16 @@ export class EventDetail implements OnInit {
     );
   });
 
+  readonly canLeave = computed(() => {
+    const ev = this.event();
+    return this.hasJoined() && !!ev && isActiveJoinedEventStatus(ev.status);
+  });
+
+  readonly isInactiveParticipation = computed(() => {
+    const ev = this.event();
+    return this.hasJoined() && !!ev && !isActiveJoinedEventStatus(ev.status);
+  });
+
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id || Number.isNaN(id)) {
@@ -70,12 +81,12 @@ export class EventDetail implements OnInit {
   loadEvent(id: number): void {
     this.loading.set(true);
     const joined$ = this.auth.isLoggedIn()
-      ? this.attendanceService.hasJoined(id)
+      ? this.participationService.hasJoined(id)
       : of(false);
 
     forkJoin({
       event: this.eventService.getById(id),
-      count: this.attendanceService.getAttendeeCount(id),
+      count: this.participationService.getAttendeeCount(id),
       joined: joined$,
     }).subscribe({
       next: ({ event, count, joined }) => {
@@ -96,7 +107,7 @@ export class EventDetail implements OnInit {
   }
 
   loadParticipants(eventId: number): void {
-    this.attendanceService.getParticipants(eventId).subscribe({
+    this.participationService.getParticipants(eventId).subscribe({
       next: (list) => {
         this.participants.set(list);
         this.participantCount.set(list.length);
@@ -119,7 +130,7 @@ export class EventDetail implements OnInit {
     }
 
     this.joining.set(true);
-    this.attendanceService.join(ev.id).subscribe({
+    this.participationService.join(ev.id).subscribe({
       next: () => {
         this.joining.set(false);
         this.hasJoined.set(true);
@@ -133,12 +144,17 @@ export class EventDetail implements OnInit {
     });
   }
 
+  onGalleryError(evt: Event | any): void {
+    const el = (evt?.currentTarget || evt?.target) as HTMLElement;
+    if (el) el.style.display = 'none';
+  }
+
   leaveEvent(): void {
     const ev = this.event();
     if (!ev) return;
 
     this.leaving.set(true);
-    this.attendanceService.leave(ev.id).subscribe({
+    this.participationService.leave(ev.id).subscribe({
       next: () => {
         this.leaving.set(false);
         this.hasJoined.set(false);

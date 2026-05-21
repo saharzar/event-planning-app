@@ -29,6 +29,8 @@ export class EventForm implements OnInit {
   readonly submitting = signal(false);
   readonly isEditMode = signal(false);
   readonly imagePreview = signal<string | null>(null);
+  readonly extraImagePreviews = signal<string[]>([]);
+  private readonly removedExtraImages = signal<number[]>([]);
   private eventId: number | null = null;
 
   readonly form = this.fb.nonNullable.group({
@@ -39,6 +41,8 @@ export class EventForm implements OnInit {
     date: ['', Validators.required],
     time: ['', Validators.required],
     imageUrl: [''],
+    organizerDisplayName: [''],
+    extraImages: [<string[]>[]],
   });
 
   ngOnInit(): void {
@@ -54,6 +58,12 @@ export class EventForm implements OnInit {
     this.loading.set(true);
     this.eventService.getById(id).subscribe({
       next: (event) => {
+        if (event.status === 'ARCHIVED') {
+          this.loading.set(false);
+          this.notifications.warning('Archived events cannot be edited.');
+          this.router.navigate(['/events', event.id]);
+          return;
+        }
         this.form.patchValue({
           title: event.title,
           description: event.description ?? '',
@@ -62,8 +72,11 @@ export class EventForm implements OnInit {
           date: event.date,
           time: event.time?.slice(0, 5) ?? event.time,
           imageUrl: event.imageUrl ?? '',
+          organizerDisplayName: event.organizerDisplayName ?? '',
+          extraImages: event.extraImages ?? [],
         });
         this.imagePreview.set(event.imageUrl?.trim() || null);
+        this.extraImagePreviews.set([...(event.extraImages ?? [])]);
         this.loading.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -81,10 +94,13 @@ export class EventForm implements OnInit {
     }
 
     const raw = this.form.getRawValue();
+    const extraImages = this.extraImagePreviews();
     const payload = {
       ...raw,
       time: this.normalizeTime(raw.time),
       imageUrl: raw.imageUrl?.trim() || null,
+      organizerDisplayName: raw.organizerDisplayName?.trim() || null,
+      extraImages: extraImages.length > 0 ? extraImages : [],
     };
 
     this.submitting.set(true);
@@ -133,6 +149,36 @@ export class EventForm implements OnInit {
   clearImage(): void {
     this.imagePreview.set(null);
     this.form.patchValue({ imageUrl: '' });
+  }
+
+  onExtraImagesChange(event: globalThis.Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    if (!files || files.length === 0) return;
+
+    const current = this.extraImagePreviews();
+    const remaining = 4 - current.length;
+    const toAdd = Math.min(files.length, remaining);
+
+    for (let i = 0; i < toAdd; i++) {
+      const file = files[i];
+      if (!file.type.startsWith('image/')) continue;
+      if (file.size > 800_000) continue;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.extraImagePreviews.update((arr) => [...arr, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    if (toAdd < files.length) {
+      this.notifications.warning('Max 4 extra photos allowed. Added ' + toAdd + ' of ' + files.length + '.');
+    }
+    input.value = '';
+  }
+
+  removeExtraImage(index: number): void {
+    this.extraImagePreviews.update((arr) => arr.filter((_, i) => i !== index));
   }
 
   private normalizeTime(time: string): string {

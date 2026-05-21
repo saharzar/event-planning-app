@@ -11,12 +11,11 @@
 
 :host.event-cover-host--card .event-cover {
   height: 180px;
-  border-radius: 0;
 }
 
 :host.event-cover-host--banner .event-cover {
-  height: clamp(220px, 40vw, 380px);
-  border-radius: 1.5rem;
+  height: clamp(100px, 18vw, 160px);
+  border-radius: 1rem;
 }
 
 .event-cover__img {

@@ -60,18 +60,23 @@
             <td class="text-end">
               <div class="btn-group btn-group-sm flex-wrap justify-content-end">
                 <a [routerLink]="['/events', event.id]" class="btn btn-outline-soft">View</a>
-                <a [routerLink]="['/events', event.id, 'edit']" class="btn btn-outline-soft">Edit</a>
+                @if (event.status !== 'ARCHIVED') {
+                  <a [routerLink]="['/events', event.id, 'edit']" class="btn btn-outline-soft">Edit</a>
+                }
                 <button type="button" class="btn btn-outline-soft" (click)="openParticipants(event)">
                   Participants
                 </button>
-                @if (event.status === 'DRAFT' || event.status === 'PAUSED') {
+                @if (event.status === 'DRAFT' || event.status === 'SUSPENDED') {
                   <button type="button" class="btn btn-outline-soft text-success" (click)="publish(event.id)">Publish</button>
                 }
                 @if (event.status === 'PUBLISHED') {
-                  <button type="button" class="btn btn-outline-soft text-warning" (click)="pause(event.id)">Pause</button>
+                  <button type="button" class="btn btn-outline-soft text-warning" (click)="toggleSuspend(event.id)">Suspend</button>
+                }
+                @if (event.status === 'SUSPENDED') {
+                  <button type="button" class="btn btn-outline-soft text-info" (click)="toggleSuspend(event.id)">Resume</button>
                 }
                 @if (event.status !== 'ARCHIVED') {
-                  <button type="button" class="btn btn-outline-soft" (click)="archive(event.id)">Archive</button>
+                  <button type="button" class="btn btn-outline-soft" (click)="requestArchive(event)">Archive</button>
                 }
                 <button type="button" class="btn btn-outline-soft text-danger" (click)="requestDelete(event.id, event.title)">
                   Delete
@@ -101,6 +106,17 @@
     [danger]="true"
     (confirmed)="confirmDelete()"
     (cancelled)="cancelDelete()"
+  />
+}
+
+@if (archiveTarget(); as target) {
+  <app-confirm-modal
+    title="Archive event?"
+    message="Are you sure you want to archive this event? Archived events cannot be restored or edited."
+    confirmLabel="Archive Event"
+    [danger]="true"
+    (confirmed)="confirmArchive()"
+    (cancelled)="cancelArchive()"
   />
 }
 

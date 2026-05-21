@@ -28,6 +28,9 @@ export class Contact {
       this.form.markAllAsTouched();
       return;
     }
+    const { name, email, subject, message } = this.form.value;
+    const mailto = `mailto:saharzar77@gmail.com?subject=${encodeURIComponent(`[Evently] ${subject}`)}&body=${encodeURIComponent(`From: ${name}\nEmail: ${email}\n\n${message}`)}`;
+    window.open(mailto, '_blank');
     this.submitted.set(true);
     this.notifications.success('Thanks! We received your message and will get back to you soon.');
     this.form.reset();

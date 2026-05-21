@@ -1,8 +1,8 @@
 package com.eventplanning.controller;
 
-import com.eventplanning.dto.response.AttendanceResponse;
+import com.eventplanning.dto.response.ParticipationResponse;
 import com.eventplanning.entity.User;
-import com.eventplanning.service.AttendanceService;
+import com.eventplanning.service.ParticipationService;
 import com.eventplanning.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -13,36 +13,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/attendance")
+@RequestMapping("/api/participation")
 @RequiredArgsConstructor
-public class AttendanceController {
+public class ParticipationController {
 
-    private final AttendanceService attendanceService;
+    private final ParticipationService participationService;
     private final UserService userService;
 
-    // Join event
     @PostMapping("/{eventId}/join")
-    public ResponseEntity<AttendanceResponse> joinEvent(
+    public ResponseEntity<ParticipationResponse> joinEvent(
             @PathVariable Long eventId,
             HttpSession session) {
         User currentUser = userService.getSessionUser(session);
-        AttendanceResponse response = attendanceService.joinEvent(eventId, currentUser);
+        ParticipationResponse response = participationService.joinEvent(eventId, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Get participants of an event
     @GetMapping("/{eventId}/participants")
-    public ResponseEntity<List<AttendanceResponse>> getParticipants(
+    public ResponseEntity<List<ParticipationResponse>> getParticipants(
             @PathVariable Long eventId,
             HttpSession session) {
         User currentUser = userService.getSessionUser(session);
-        return ResponseEntity.ok(attendanceService.getParticipants(eventId, currentUser));
+        return ResponseEntity.ok(participationService.getParticipants(eventId, currentUser));
     }
 
-    @GetMapping("/my")
-    public ResponseEntity<List<AttendanceResponse>> getMyJoinedEvents(HttpSession session) {
+    @GetMapping("/my/upcoming")
+    public ResponseEntity<List<ParticipationResponse>> getMyUpcomingJoinedEvents(HttpSession session) {
         User currentUser = userService.getSessionUser(session);
-        return ResponseEntity.ok(attendanceService.getMyJoinedEvents(currentUser));
+        return ResponseEntity.ok(participationService.getMyUpcomingJoinedEvents(currentUser));
+    }
+
+    @GetMapping("/my/archived")
+    public ResponseEntity<List<ParticipationResponse>> getMyPastOrArchivedJoinedEvents(HttpSession session) {
+        User currentUser = userService.getSessionUser(session);
+        return ResponseEntity.ok(participationService.getMyPastOrArchivedJoinedEvents(currentUser));
     }
 
     @GetMapping("/{eventId}/joined")
@@ -50,12 +54,12 @@ public class AttendanceController {
             @PathVariable Long eventId,
             HttpSession session) {
         User currentUser = userService.getSessionUser(session);
-        return ResponseEntity.ok(attendanceService.hasJoined(eventId, currentUser));
+        return ResponseEntity.ok(participationService.hasJoined(eventId, currentUser));
     }
 
     @GetMapping("/{eventId}/count")
     public ResponseEntity<Long> getAttendeeCount(@PathVariable Long eventId) {
-        return ResponseEntity.ok(attendanceService.getAttendeeCount(eventId));
+        return ResponseEntity.ok(participationService.getAttendeeCount(eventId));
     }
 
     @DeleteMapping("/{eventId}/leave")
@@ -63,7 +67,7 @@ public class AttendanceController {
             @PathVariable Long eventId,
             HttpSession session) {
         User currentUser = userService.getSessionUser(session);
-        attendanceService.leaveEvent(eventId, currentUser);
+        participationService.leaveEvent(eventId, currentUser);
         return ResponseEntity.ok("Left event successfully");
     }
 }

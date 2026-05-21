@@ -7,7 +7,7 @@
         <i class="bi bi-arrow-left"></i> Back to events
       </a>
 
-      <div class="event-banner-wrap mb-4">
+      <div class="event-banner-wrap mb-3">
         <app-event-cover [src]="ev.imageUrl" [alt]="ev.title" variant="banner" />
         <div class="event-banner-overlay">
           <app-countdown-badge [date]="ev.date" [time]="ev.time" />
@@ -53,10 +53,23 @@
                 <i class="bi bi-person-badge"></i>
                 <div>
                   <span class="info-label">Organizer</span>
-                  <span class="info-value">{{ ev.organizer.fullName }}</span>
+                  <span class="info-value">{{ ev.organizerDisplayName || ev.organizer.fullName }}</span>
                 </div>
               </div>
             </div>
+
+            @if (ev.extraImages && ev.extraImages.length > 0) {
+              <div class="gallery-section mt-4 pt-4 border-top">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-images me-2"></i>Event Gallery</h2>
+                <div class="gallery-grid">
+                  @for (img of ev.extraImages; track $index) {
+                    <div class="gallery-item">
+                      <img [src]="img" alt="Event photo {{ $index + 1 }}" loading="lazy" (error)="onGalleryError($any($event))" />
+                    </div>
+                  }
+                </div>
+              </div>
+            }
 
             @if (isOwner() && participants().length > 0) {
               <div class="attendees-section mt-4 pt-4 border-top">
@@ -101,12 +114,21 @@
             <h2 class="h6 fw-bold mb-3">Registration</h2>
 
             @if (isOwner()) {
+              @if (ev.status === 'ARCHIVED') {
+                <div class="joined-state text-center py-3 mb-3">
+                  <i class="bi bi-archive text-secondary display-6"></i>
+                  <p class="fw-bold mb-1 mt-2">Event archived</p>
+                  <p class="smaller text-secondary mb-0">This event has been archived and cannot be edited.</p>
+                </div>
+              }
               <p class="smaller text-secondary mb-3">You are the organizer of this event.</p>
               <div class="d-grid gap-2">
-                <a [routerLink]="['/events', ev.id, 'edit']" class="btn btn-gradient">Edit event</a>
+                @if (ev.status !== 'ARCHIVED') {
+                  <a [routerLink]="['/events', ev.id, 'edit']" class="btn btn-gradient">Edit event</a>
+                }
                 <a routerLink="/my-events" class="btn btn-outline-soft">Manage in My Events</a>
               </div>
-            } @else if (hasJoined()) {
+            } @else if (canLeave()) {
               <div class="joined-state text-center py-3 mb-3">
                 <i class="bi bi-check-circle-fill text-success display-6"></i>
                 <p class="fw-bold mb-0 mt-2">You're going!</p>
@@ -124,6 +146,14 @@
                   Leave Event
                 }
               </button>
+            } @else if (isInactiveParticipation()) {
+              <div class="joined-state text-center py-3 mb-0">
+                <i class="bi bi-archive text-secondary display-6"></i>
+                <p class="fw-bold mb-1 mt-2">Previously joined</p>
+                <p class="smaller text-secondary mb-0">
+                  This event is suspended or archived and is no longer active.
+                </p>
+              </div>
             } @else if (canJoin()) {
               <p class="smaller text-secondary mb-3">Reserve your spot for this published event.</p>
               <button
