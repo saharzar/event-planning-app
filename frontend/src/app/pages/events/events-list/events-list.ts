@@ -49,9 +49,9 @@ export class EventsList implements OnInit {
     const time = this.timeFilter();
     if (time === 'all') return list;
     if (time === 'upcoming') {
-      return list.filter((e) => !isEventEnded(e.date, e.time));
+      return list.filter((e) => e.status !== 'ARCHIVED' && !isEventEnded(e.date, e.time));
     }
-    return list.filter((e) => isEventEnded(e.date, e.time));
+    return list.filter((e) => e.status === 'ARCHIVED' || isEventEnded(e.date, e.time));
   });
 
   ngOnInit(): void {

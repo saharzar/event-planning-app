@@ -15,8 +15,8 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    Page<Event> findByStatus(EventStatus status, Pageable pageable);
-    Page<Event> findByTitleContainingIgnoreCaseAndStatus(String title, EventStatus status, Pageable pageable);
+    Page<Event> findByStatusIn(List<EventStatus> statuses, Pageable pageable);
+    Page<Event> findByTitleContainingIgnoreCaseAndStatusIn(String title, List<EventStatus> statuses, Pageable pageable);
     List<Event> findByOrganizerId(Long organizerId);
 
     @Query("SELECT e FROM Event e WHERE (e.status = 'PUBLISHED' OR e.status = 'SUSPENDED') AND e.date < :cutoffDate")
