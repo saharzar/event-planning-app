@@ -95,7 +95,7 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    // Publish event: DRAFT -> PUBLISHED
+    // Publish event:
     public EventResponse publishEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
@@ -110,7 +110,7 @@ public class EventService {
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Toggle suspend/resume: PUBLISHED <-> SUSPENDED
+    // Toggle suspend/resume
     public EventResponse toggleSuspendEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
@@ -128,7 +128,7 @@ public class EventService {
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Archive event: DRAFT / PUBLISHED / SUSPENDED -> ARCHIVED
+    // Archive event
     public EventResponse archiveEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);

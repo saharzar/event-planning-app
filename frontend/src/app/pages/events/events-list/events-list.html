@@ -75,7 +75,7 @@
           </div>
         }
       </div>
-      @if (totalPages() > 1 && timeFilter() === 'upcoming') {
+      @if (totalPages() > 1) {
         <nav class="mt-5 d-flex justify-content-center" aria-label="Events pagination">
           <ul class="pagination pagination-soft mb-0">
             <li class="page-item" [class.disabled]="page() === 0">

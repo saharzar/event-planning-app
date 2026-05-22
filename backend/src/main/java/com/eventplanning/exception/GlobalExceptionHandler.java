@@ -1,4 +1,4 @@
-package com.eventplanning.exception;
+wwpackage com.eventplanning.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -67,9 +67,7 @@ public class ParticipationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Returns only upcoming joined events (PUBLISHED or SUSPENDED status, date >= today).
-     */
+
     public List<ParticipationResponse> getMyUpcomingJoinedEvents(User currentUser) {
         return participationRepository
                 .findUpcomingJoinedEvents(currentUser.getId(), LocalDate.now())
@@ -78,9 +76,7 @@ public class ParticipationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Returns past or archived joined events (ARCHIVED status or date < today).
-     */
+
     public List<ParticipationResponse> getMyPastOrArchivedJoinedEvents(User currentUser) {
         return participationRepository
                 .findPastOrArchivedJoinedEvents(currentUser.getId(), LocalDate.now())

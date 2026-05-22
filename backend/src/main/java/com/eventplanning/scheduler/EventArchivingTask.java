@@ -16,10 +16,7 @@ public class EventArchivingTask {
 
     private final EventRepository eventRepository;
 
-    /**
-     * Runs every night at midnight (00:00).
-     * Archives all PUBLISHED or SUSPENDED events whose date has passed.
-     */
+
     @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
     public void archiveExpiredEvents() {
