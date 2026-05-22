@@ -24,9 +24,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     @Query("SELECT p FROM Participation p WHERE p.user.id = :userId AND p.event.id = :eventId")
     Optional<Participation> findByUserIdAndEventId(@Param("userId") Long userId, @Param("eventId") Long eventId);
 
-    /**
-     * Upcoming joined events: event is PUBLISHED or SUSPENDED, date >= today.
-     */
+
     @Query("SELECT p FROM Participation p JOIN FETCH p.event e " +
            "WHERE p.user.id = :userId " +
            "AND (e.status = 'PUBLISHED' OR e.status = 'SUSPENDED') " +
@@ -35,9 +33,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     List<Participation> findUpcomingJoinedEvents(@Param("userId") Long userId,
                                                   @Param("currentDate") LocalDate currentDate);
 
-    /**
-     * Past or archived joined events: event is ARCHIVED OR date < today.
-     */
+
     @Query("SELECT p FROM Participation p JOIN FETCH p.event e " +
            "WHERE p.user.id = :userId " +
            "AND (e.status = 'ARCHIVED' OR e.date < :currentDate) " +

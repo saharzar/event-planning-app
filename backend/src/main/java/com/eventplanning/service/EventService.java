@@ -42,15 +42,16 @@ public class EventService {
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Get all published events with pagination
+    // Get published + archived events for browsing
     public Page<EventResponse> getPublishedEvents(Pageable pageable) {
-        return eventRepository.findByStatus(EventStatus.PUBLISHED, pageable)
+        return eventRepository.findByStatusIn(List.of(EventStatus.PUBLISHED, EventStatus.ARCHIVED), pageable)
                 .map(this::mapToResponse);
     }
 
-    // Search published events by title
+    // Search published + archived events by title
     public Page<EventResponse> searchEvents(String title, Pageable pageable) {
-        return eventRepository.findByTitleContainingIgnoreCaseAndStatus(title, EventStatus.PUBLISHED, pageable)
+        return eventRepository.findByTitleContainingIgnoreCaseAndStatusIn(
+                title, List.of(EventStatus.PUBLISHED, EventStatus.ARCHIVED), pageable)
                 .map(this::mapToResponse);
     }
 
@@ -94,7 +95,7 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    // Publish event: DRAFT -> PUBLISHED
+    // Publish event:
     public EventResponse publishEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
@@ -109,7 +110,7 @@ public class EventService {
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Toggle suspend/resume: PUBLISHED <-> SUSPENDED
+    // Toggle suspend/resume
     public EventResponse toggleSuspendEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);
@@ -127,7 +128,7 @@ public class EventService {
         return mapToResponse(eventRepository.save(event));
     }
 
-    // Archive event: DRAFT / PUBLISHED / SUSPENDED -> ARCHIVED
+    // Archive event
     public EventResponse archiveEvent(Long id, User currentUser) {
         Event event = findEventById(id);
         checkOwnership(event, currentUser);

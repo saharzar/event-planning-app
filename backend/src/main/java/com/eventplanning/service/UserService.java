@@ -26,7 +26,7 @@ public class UserService {
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword()); // plain text for now, can add hashing later
+        user.setPassword(request.getPassword());
 
         User saved = userRepository.save(user);
         session.setAttribute("userId", saved.getId());

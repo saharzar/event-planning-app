@@ -4,9 +4,11 @@ import com.eventplanning.dto.response.ParticipationResponse;
 import com.eventplanning.entity.Event;
 import com.eventplanning.entity.Participation;
 import com.eventplanning.entity.User;
+import com.eventplanning.entity.EventStatus;
 import com.eventplanning.exception.AlreadyJoinedException;
 import com.eventplanning.exception.ResourceNotFoundException;
 import com.eventplanning.exception.UnauthorizedException;
+import com.eventplanning.exception.UnauthorizedOperationException;
 import com.eventplanning.repository.EventRepository;
 import com.eventplanning.repository.ParticipationRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,10 @@ public class ParticipationService {
     public ParticipationResponse joinEvent(Long eventId, User currentUser) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with id: " + eventId));
+
+        if (event.getStatus() == EventStatus.ARCHIVED) {
+            throw new UnauthorizedOperationException("Cannot join an archived event");
+        }
 
         if (event.getOrganizer().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("You cannot join your own event");
@@ -61,9 +67,7 @@ public class ParticipationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Returns only upcoming joined events (PUBLISHED or SUSPENDED status, date >= today).
-     */
+
     public List<ParticipationResponse> getMyUpcomingJoinedEvents(User currentUser) {
         return participationRepository
                 .findUpcomingJoinedEvents(currentUser.getId(), LocalDate.now())
@@ -72,9 +76,7 @@ public class ParticipationService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Returns past or archived joined events (ARCHIVED status or date < today).
-     */
+
     public List<ParticipationResponse> getMyPastOrArchivedJoinedEvents(User currentUser) {
         return participationRepository
                 .findPastOrArchivedJoinedEvents(currentUser.getId(), LocalDate.now())

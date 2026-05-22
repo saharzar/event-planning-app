@@ -38,7 +38,7 @@ export class EventsList implements OnInit {
   readonly page = signal(0);
   readonly totalPages = signal(0);
   readonly totalElements = signal(0);
-  readonly pageSize = 9;
+  readonly pageSize = 20;
 
   readonly pageNumbers = computed(() =>
     Array.from({ length: this.totalPages() }, (_, index) => index)
@@ -49,9 +49,9 @@ export class EventsList implements OnInit {
     const time = this.timeFilter();
     if (time === 'all') return list;
     if (time === 'upcoming') {
-      return list.filter((e) => !isEventEnded(e.date, e.time));
+      return list.filter((e) => e.status !== 'ARCHIVED' && !isEventEnded(e.date, e.time));
     }
-    return list.filter((e) => isEventEnded(e.date, e.time));
+    return list.filter((e) => e.status === 'ARCHIVED' || isEventEnded(e.date, e.time));
   });
 
   ngOnInit(): void {
@@ -86,6 +86,8 @@ export class EventsList implements OnInit {
 
   onTimeFilterChange(value: TimeFilter): void {
     this.timeFilter.set(value);
+    this.page.set(0);
+    this.loadEvents();
   }
 
   loadEvents(): void {
